@@ -7,7 +7,6 @@ namespace Starfall
     public static void Main(params string[] args)
     {
       var input = new InputManager();
-
     }
   }
 }
