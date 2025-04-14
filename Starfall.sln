@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starfall", "Starfall.csproj", "{55BACE10-3920-A650-7D21-4E0A65011257}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{55BACE10-3920-A650-7D21-4E0A65011257}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55BACE10-3920-A650-7D21-4E0A65011257}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55BACE10-3920-A650-7D21-4E0A65011257}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55BACE10-3920-A650-7D21-4E0A65011257}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C03E903B-D270-4F74-B5F5-07D2F032F386}
+	EndGlobalSection
+EndGlobal
