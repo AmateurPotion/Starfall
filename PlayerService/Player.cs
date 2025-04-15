@@ -1,4 +1,6 @@
-namespace Starfall.Entities
+using Starfall.Entities;
+
+namespace Starfall.PlayerService
 {
   public class Player : Entity
   {

@@ -20,5 +20,10 @@ namespace Starfall.Worlds
         tileMap[i] = baseTile.Duplicate();
       }
     }
+
+    public void Save()
+    {
+
+    }
   }
 }
