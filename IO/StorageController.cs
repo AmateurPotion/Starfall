@@ -36,15 +36,33 @@ namespace Starfall.IO
 
     public static string[] GetSaveNames()
     {
-      File.WriteAllText(Path.Combine(savePath, "StoneTile.json")
-        , JsonSerializer.Serialize(new TileData()
-        {
-          Code = '■',
-          Color = ConsoleColor.Gray,
-          Background = ConsoleColor.White,
-          movable = true
-        }, jsonOption));
       return Directory.GetDirectories("./saves/world");
+    }
+
+    public static List<(string name, TileData data)> LoadTileDataList()
+    {
+      var result = new List<(string, TileData)>();
+
+      foreach (var info in new DirectoryInfo("./Resources/tiles/").GetFiles())
+      {
+        try
+        {
+          if (info.Name.Contains("Tile.json"))
+          {
+            var name = info.Name.Replace("Tile.json", "");
+            var stream = info.OpenRead();
+            var data = JsonSerializer.Deserialize<TileData>(stream);
+
+            result.Add((name, data));
+
+            stream.Close();
+          }
+        }
+        catch (JsonException)
+        { }
+      }
+
+      return result;
     }
 
     public static bool TryGetResource(string path, out Stream stream)

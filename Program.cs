@@ -7,15 +7,16 @@ namespace Starfall
   {
     public static void Main(params string[] args)
     {
-      StorageController.Init();
-
+      GameManager.Init();
     Menu:
       Console.Clear();
-      InputManager.PrintTextFile("Starfall.Resources.intro.txt", ConsoleColor.DarkCyan, ConsoleColor.Green);
+      InputManager.PrintTextFile("Starfall.Resources.intro.txt", ConsoleColor.DarkMagenta, ConsoleColor.Green);
+      Console.WriteLine();
       switch (MenuUtil.OpenMenu(true, "새로운 여정", "데이터 불러오기", "다른 여정 참여"))
       {
         case 0:
           // 새로운 여정 - 새 게임
+          GameManager.StartGame();
           break;
 
         case 1:
@@ -31,6 +32,7 @@ namespace Starfall
 
         case 2:
           // 다른 여정 참여 - 다른 여정 참여
+          GameManager.JoinGame();
           Console.WriteLine("개발중입니다.");
           Console.ReadKey();
           goto Menu;

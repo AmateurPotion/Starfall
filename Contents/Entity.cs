@@ -1,6 +1,6 @@
 using Starfall.Utils;
 
-namespace Starfall.Entities
+namespace Starfall.Contents
 {
   public class Entity(char code = '◈')
   {
