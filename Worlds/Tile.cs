@@ -1,3 +1,5 @@
+using Starfall.IO.Dataset;
+
 namespace Starfall.Worlds
 {
   public class Tile
@@ -23,5 +25,13 @@ namespace Starfall.Worlds
     }
 
     public static implicit operator char(Tile tile) => tile.code;
+    public static implicit operator Tile(TileData data)
+      => new()
+      {
+        code = data.Code,
+        color = data.Color,
+        background = data.Background,
+        movable = data.movable
+      };
   }
 }

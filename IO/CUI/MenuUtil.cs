@@ -13,7 +13,7 @@ namespace Starfall.IO.CUI
 
       for (var i = 0; i < selection.Length; i++)
       {
-        var (vx, vy) = Console.GetCursorPosition();
+        var (_, vy) = Console.GetCursorPosition();
         Console.SetCursorPosition(sx, vy);
         Console.ResetColor();
         if (i == select)
@@ -34,10 +34,12 @@ namespace Starfall.IO.CUI
       {
         case ConsoleKey.UpArrow:
           select = select == 0 ? selection.Length - 1 : select - 1;
+          Console.SetCursorPosition(sx, sy);
           goto Render;
 
         case ConsoleKey.DownArrow:
           select = select == selection.Length - 1 ? 0 : select + 1;
+          Console.SetCursorPosition(sx, sy);
           goto Render;
 
         case ConsoleKey.Enter: break;

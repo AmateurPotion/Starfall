@@ -9,6 +9,7 @@ namespace Starfall.IO
   public static class StorageController
   {
     public static string savePath = "./saves";
+    public static string saveName { get; private set; } = "default";
     private static readonly Assembly assembly = Assembly.GetExecutingAssembly();
     private static readonly JsonSerializerOptions jsonOption = new()
     {
@@ -18,53 +19,20 @@ namespace Starfall.IO
 
     public static void Init()
     {
-      static void CreateDir(string path)
-      {
-        var info = new DirectoryInfo(path);
-        if (!info.Exists) info.Create();
-      }
-
       CreateDir("saves");
       CreateDir("saves/world");
     }
 
-    public static void Save<T>(string name, T gameData) where T : IGameData
+    public static void SetSaveName(string name)
     {
-      File.WriteAllText(Path.Combine(savePath, $"{name}.json")
-        , JsonSerializer.Serialize(gameData, jsonOption));
+      CreateDir($"saves/world/{saveName}");
+      saveName = name;
     }
 
     public static string[] GetSaveNames()
     {
       return Directory.GetDirectories("./saves/world");
     }
-
-    public static List<(string name, TileData data)> LoadTileDataList()
-    {
-      var result = new List<(string, TileData)>();
-
-      foreach (var info in new DirectoryInfo("./Resources/tiles/").GetFiles())
-      {
-        try
-        {
-          if (info.Name.Contains("Tile.json"))
-          {
-            var name = info.Name.Replace("Tile.json", "");
-            var stream = info.OpenRead();
-            var data = JsonSerializer.Deserialize<TileData>(stream);
-
-            result.Add((name, data));
-
-            stream.Close();
-          }
-        }
-        catch (JsonException)
-        { }
-      }
-
-      return result;
-    }
-
     public static bool TryGetResource(string path, out Stream stream)
     {
       stream = Stream.Null;
@@ -76,6 +44,34 @@ namespace Starfall.IO
       }
       else
         return false;
+    }
+
+    private static void CreateDir(string path)
+    {
+      var info = new DirectoryInfo(path);
+      if (!info.Exists) info.Create();
+    }
+
+    public static void SaveObj(string path, object data)
+    {
+      var jsonString = JsonSerializer.Serialize(data, jsonOption);
+      File.WriteAllText(Path.Combine("./saves/world/", saveName, path), jsonString);
+    }
+
+    public static bool LoadObj<T>(string path, out T? obj)
+    {
+      obj = default;
+
+      try
+      {
+        obj = JsonSerializer.Deserialize<T>(File.ReadAllText(Path.Combine("./saves/world/", saveName, path)));
+      }
+      catch (JsonException)
+      {
+        return false;
+      }
+
+      return true;
     }
   }
 }

@@ -12,7 +12,14 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Resources\*.txt" />
+    <EmbeddedResource Include="Resources\pages\*.txt" />
     <EmbeddedResource Include="Resources\*.json" />
+    <Content Include="Resources\pages\*.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\items\*.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\entities\*.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
