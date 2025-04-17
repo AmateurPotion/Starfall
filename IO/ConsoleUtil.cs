@@ -2,7 +2,7 @@ using System.Reflection;
 
 namespace Starfall.IO
 {
-  public static class InputManager
+  public static class ConsoleUtil
   {
     public static Action StartCUIPart(bool cursorVisible = true)
     {

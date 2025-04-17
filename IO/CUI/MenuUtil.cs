@@ -2,11 +2,11 @@ namespace Starfall.IO.CUI
 {
   public static class MenuUtil
   {
-    public static int OpenMenu(bool clean, params string[] selection)
+    public static int OpenMenu(int startIndex, bool clean, params string[] selection)
     {
       if (selection.Length <= 0) return 0;
-      int select = 0;
-      var Close = InputManager.StartCUIPart(false);
+      int select = startIndex;
+      var Close = ConsoleUtil.StartCUIPart(false);
 
     Render:
       var (sx, sy) = Console.GetCursorPosition();
@@ -71,6 +71,6 @@ namespace Starfall.IO.CUI
       return select;
     }
 
-    public static int OpenMenu(params string[] selection) => OpenMenu(false, selection);
+    public static int OpenMenu(params string[] selection) => OpenMenu(0, false, selection);
   }
 }

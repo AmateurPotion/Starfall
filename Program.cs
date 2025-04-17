@@ -10,9 +10,9 @@ namespace Starfall
       GameManager.Init();
     Menu:
       Console.Clear();
-      InputManager.PrintTextFile("Starfall.Resources.intro.txt", ConsoleColor.DarkMagenta, ConsoleColor.Green);
+      ConsoleUtil.PrintTextFile("Starfall.Resources.intro.txt", ConsoleColor.DarkMagenta, ConsoleColor.Green);
       Console.WriteLine();
-      switch (MenuUtil.OpenMenu(true, "새로운 여정", "데이터 불러오기", "다른 여정 참여"))
+      switch (MenuUtil.OpenMenu("새로운 여정", "데이터 불러오기", "다른 여정 참여"))
       {
         case 0:
           // 새로운 여정 - 새 게임
@@ -22,7 +22,7 @@ namespace Starfall
         case 1:
           // 데이터 불러오기 - 데이터 불러오기
           var saveList = StorageController.GetSaveNames();
-          switch (MenuUtil.OpenMenu(true, [.. saveList, "뒤로가기"]))
+          switch (MenuUtil.OpenMenu([.. saveList, "뒤로가기"]))
           {
             case -1:
             case var i when i == saveList.Length:

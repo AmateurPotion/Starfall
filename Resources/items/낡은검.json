@@ -1,8 +1,9 @@
 {
-	"name": "낡은 검",
-	"description": "쉽게 볼 수 있는 낡은 검 입니다.",
-	"atk": 2,
-	"def": 0,
-	"hp": 0,
-	"price": 0
+	"Type": 1,
+	"Name": "낡은 검",
+	"Description": "쉽게 볼 수 있는 낡은 검 입니다.",
+	"Atk": 2,
+	"Def": 0,
+	"Hp": 0,
+	"Price": 600
 }
