@@ -1,5 +1,6 @@
 ﻿using Starfall.IO;
 using Starfall.IO.CUI;
+using Starfall.IO.Dataset;
 
 namespace Starfall
 {
@@ -12,22 +13,20 @@ namespace Starfall
       Console.Clear();
       ConsoleUtil.PrintTextFile("Starfall.Resources.intro.txt", ConsoleColor.DarkMagenta, ConsoleColor.Green);
       Console.WriteLine();
+
+      StorageController.SetSaveName("default");
       switch (MenuUtil.OpenMenu("새로운 여정", "데이터 불러오기", "다른 여정 참여"))
       {
         case 0:
           // 새로운 여정 - 새 게임
-          GameManager.StartGame();
+          GameManager.StartGame(new());
           break;
 
         case 1:
           // 데이터 불러오기 - 데이터 불러오기
-          var saveList = StorageController.GetSaveNames();
-          switch (MenuUtil.OpenMenu([.. saveList, "뒤로가기"]))
-          {
-            case -1:
-            case var i when i == saveList.Length:
-              goto Menu;
-          }
+
+          GameManager.StartGame(StorageController.LoadBinary<GameData>("data"));
+
           break;
 
         case 2:

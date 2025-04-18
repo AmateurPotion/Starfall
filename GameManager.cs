@@ -57,11 +57,10 @@ namespace Starfall
       loaded = true;
     }
 
-    public static Game StartGame()
+    public static Game StartGame(GameData data)
     {
       StorageController.SetSaveName("default");
-      var data = new GameData();
-      StorageController.SaveObj("data", data);
+      data = new GameData();
       var game = new Game(data);
       game.Start();
 

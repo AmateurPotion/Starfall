@@ -83,5 +83,12 @@ namespace Starfall.IO
       stream.Write(data, 0, data.Length);
       stream.Close();
     }
+
+    public static T LoadBinary<T>(string name)
+    {
+      using var stream = new FileStream(Path.Combine("./saves/world/", saveName, name + ".bin"), FileMode.Open, FileAccess.ReadWrite);
+
+      return MessagePackSerializer.Deserialize<T>(stream);
+    }
   }
 }
