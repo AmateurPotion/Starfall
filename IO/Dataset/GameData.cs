@@ -20,12 +20,7 @@ namespace Starfall.IO.Dataset
     [Key(nameof(Gold))]
     public int Gold { get; set; } = 1500;
     [Key(nameof(Inventory))]
-    public GameDataItem[] Inventory { get; set; } = [
-      new (){Name = "무쇠갑옷", Equip = true},
-      new (){Name = "스파르타의창", Equip = true},
-      new (){Name = "낡은검", Equip = false},
-      new (){Name = "저주", Equip = false},
-    ];
+    public GameDataItem[] Inventory { get; set; } = [];
 
     public GameData()
     { }

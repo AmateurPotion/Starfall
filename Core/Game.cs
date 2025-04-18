@@ -194,7 +194,7 @@ namespace Starfall.Core
       {
         var option = new StringBuilder($"- {++index} ");
 
-        option.Append($"{item.Type} / {item.Name} |");
+        option.Append($"{item.Type.GetName()} / {item.Name} |");
         var stats = new List<string>();
         if (item.Atk != 0) stats.Add("공격력 " + StatStr(item.Atk));
         if (item.Def != 0) stats.Add("방어력 " + StatStr(item.Def));
@@ -202,6 +202,7 @@ namespace Starfall.Core
         option.Append(string.Join(" / ", stats));
         option.Append($" | {item.Description} | ");
         option.Append(player.inventory.ContainsKey(item) ? "구매완료" : item.Price + " G");
+        menu.Add(option.ToString());
       }
 
       this.savedIndex = MenuUtil.OpenMenu(this.savedIndex, false, [.. menu, "\n0. 나가기"]);
@@ -211,11 +212,13 @@ namespace Starfall.Core
         case var i when i > -1 && i < index:
           // 아이템 선택
           act = () => SelectItemOnShop(shop, shop.sellItems[i]);
+          this.savedIndex = 0;
           break;
 
         default:
           // 뒤로가기, 취소시 허브로 가기
           act = OpenHub;
+          this.savedIndex = 0;
           return false;
       }
 
