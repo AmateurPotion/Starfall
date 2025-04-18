@@ -10,8 +10,9 @@ namespace Starfall.Core
   public class Game(GameData data)
   {
     public Player player = data;
-    public Shop shop = new("수련자갑옷", "무쇠갑옷", "스파르타의갑옷", "낡은검", "청동도끼", "스파르타의창");
+    public ClassicShop shop = new("수련자갑옷", "무쇠갑옷", "스파르타의갑옷", "낡은검", "청동도끼", "스파르타의창");
     private Func<bool> act = () => false;
+    private static Random random = new();
 
     public void Start()
     {
@@ -43,7 +44,7 @@ namespace Starfall.Core
         // 던전입장
         3 => JoinDungeon,
         // 휴식하기
-        4 => Rest,
+        4 => () => Rest(500),
         // 저장하기
         5 => Save,
         _ => act
@@ -175,7 +176,7 @@ namespace Starfall.Core
     }
 
     private static string StatStr(float value) => (value > 0 ? "+" : "-") + Math.Abs(value);
-    public bool OpenShop(Shop shop)
+    public bool OpenShop(ClassicShop shop)
     {
       Console.Clear();
       AnsiConsole.MarkupLine($"""
@@ -206,7 +207,7 @@ namespace Starfall.Core
 
       switch (this.savedIndex)
       {
-        case var i when i > 0 && i < index:
+        case var i when i > -1 && i < index:
           // 아이템 선택
           act = () => SelectItemOnShop(shop, shop.sellItems[i]);
           break;
@@ -221,7 +222,7 @@ namespace Starfall.Core
       return false;
     }
 
-    public bool SelectItemOnShop(Shop shop, ClassicItem item)
+    public bool SelectItemOnShop(ClassicShop shop, ClassicItem item)
     {
       Console.Clear();
       var equip = "";
@@ -270,14 +271,105 @@ namespace Starfall.Core
       act = () => OpenShop(shop);
       return false;
     }
-
+    public List<ClassicDungeon> dungeons =
+    [
+      new ("쉬운 던전", 5, 40, 1000),
+      new ("일반 던전", 11, 40, 1700),
+      new ("어려운 던전", 17, 40, 2500),
+    ];
     public bool JoinDungeon()
     {
+      Console.Clear();
+      AnsiConsole.MarkupLine("""
+      던전입장
+      이곳에서 던전으로 들어가기전 활동을 할 수 있습니다.
+      
+      """);
+
+      var menu = new List<string>();
+      var index = 0;
+      foreach (var (label, def, _, _) in dungeons)
+      {
+        menu.Add($"{++index}. {label} | 방어력 {Math.Round(def)} 이상 권장");
+      }
+
+      var select = MenuUtil.OpenMenu([.. menu, "0. 나가기"]);
+      if (select > -1 && select < index)
+      {
+        Console.Clear();
+        var (label, def, fail, dReward) = dungeons[select];
+
+        if (player.TrueDef < def && random.Next(0, 100) < fail)
+        {
+          // 실패시
+          var damage = (int)Math.Round(player.TrueHp / 2);
+          AnsiConsole.MarkupLine($"""
+          던전 실패
+          {label}을 실패하였습니다.
+
+          [[탐험 결과]]
+          체력 {player.TrueHp} -> {player.TrueHp - damage}
+
+          """);
+
+          player.hp -= damage;
+          MenuUtil.OpenMenu("0. 나가기");
+        }
+        else
+        {
+          // 성공시
+          int damage = random.Next(20, 35) - (int)Math.Round(player.TrueDef - def),
+           reward = (int)Math.Round(dReward * (100f + player.atk * 2f) / 100f);
+          AnsiConsole.MarkupLine($"""
+          던전 클리어
+          축하합니다!!
+          {label}을 클리어 하였습니다.
+
+          [[탐험 결과]]
+          체력 {player.TrueHp} -> {player.TrueHp - damage}
+          Gold {player.gold} G -> {player.gold + reward} G
+
+          """);
+
+          player.hp -= damage;
+          player.gold += reward;
+          MenuUtil.OpenMenu("0. 나가기");
+        }
+      }
+
+      // 던전이 끝났을시 허브로
+      act = OpenHub;
       return false;
     }
 
-    public bool Rest()
+    public bool Rest(int requireGold)
     {
+      Console.Clear();
+      AnsiConsole.MarkupLine($"""
+      휴식하기
+      {requireGold} G 를 내면 체력을 회복할 수 있습니다. (보유 골드 : {player.gold} G)
+      
+      """);
+      if (MenuUtil.OpenMenu("휴식하기", "나가기") == 0)
+      {
+        Console.Clear();
+        if (player.gold >= requireGold)
+        {
+          player.gold -= requireGold;
+          player.hp = 100;
+          AnsiConsole.MarkupLine("휴식을 완료했습니다.\n");
+
+          MenuUtil.OpenMenu("확인");
+        }
+        else
+        {
+          AnsiConsole.MarkupLine("Gold 가 부족합니다.\n");
+
+          MenuUtil.OpenMenu("확인");
+        }
+      }
+
+      act = OpenHub;
       return false;
     }
 
