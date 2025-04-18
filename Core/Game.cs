@@ -377,7 +377,8 @@ namespace Starfall.Core
     public bool Save()
     {
       GameData data = player;
-      MessagePackSerializer.Serialize(data);
+      StorageController.SaveBinary("data", data);
+      act = OpenHub;
       return false;
     }
   }

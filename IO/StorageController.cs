@@ -1,7 +1,9 @@
+using System.Buffers;
 using System.Reflection;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Unicode;
+using MessagePack;
 using Starfall.IO.Dataset;
 
 namespace Starfall.IO
@@ -55,7 +57,7 @@ namespace Starfall.IO
     public static void SaveObj(string path, object data)
     {
       var jsonString = JsonSerializer.Serialize(data, jsonOption);
-      File.WriteAllText(Path.Combine("./saves/world/", saveName, path), jsonString);
+      File.WriteAllText(Path.Combine("./saves/world/", saveName, path + ".json"), jsonString);
     }
 
     public static bool LoadObj<T>(string path, out T? obj)
@@ -64,7 +66,7 @@ namespace Starfall.IO
 
       try
       {
-        obj = JsonSerializer.Deserialize<T>(File.ReadAllText(Path.Combine("./saves/world/", saveName, path)));
+        obj = JsonSerializer.Deserialize<T>(File.ReadAllText(Path.Combine("./saves/world/", saveName, path + ".json")));
       }
       catch (JsonException)
       {
@@ -74,9 +76,12 @@ namespace Starfall.IO
       return true;
     }
 
-    public static void GetStream(string path)
+    public static void SaveBinary<T>(string name, T value)
     {
-
+      byte[] data = MessagePackSerializer.Serialize(value);
+      using var stream = new FileStream(Path.Combine("./saves/world/", saveName, name + ".bin"), FileMode.Create, FileAccess.Write);
+      stream.Write(data, 0, data.Length);
+      stream.Close();
     }
   }
 }

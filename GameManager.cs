@@ -61,7 +61,7 @@ namespace Starfall
     {
       StorageController.SetSaveName("default");
       var data = new GameData();
-      StorageController.SaveObj("data.json", data);
+      StorageController.SaveObj("data", data);
       var game = new Game(data);
       game.Start();
 

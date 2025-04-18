@@ -31,9 +31,12 @@ namespace Starfall.IO.Dataset
     { }
   }
 
+  [MessagePackObject]
   public struct GameDataItem
   {
+    [Key(nameof(Name))]
     public string Name { get; set; }
+    [Key(nameof(Equip))]
     public bool Equip { get; set; }
   }
 }
