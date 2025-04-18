@@ -14,13 +14,13 @@ namespace Starfall.PlayerService
     public float TrueDef => def + GetAddtionalDef() + (level - 1);
     public float hp = 100;
     public float TrueHp => hp + GetAddtionalHp();
-    public float gold = 1500;
+    public int gold = 1500;
 
     public Dictionary<ClassicItem, bool> inventory = [];
 
     public float GetAddtionalAtk()
     {
-      var addtional = 0;
+      var addtional = 0f;
       foreach (var (item, equip) in inventory)
       {
         if (equip) addtional += item.Atk;
@@ -30,7 +30,7 @@ namespace Starfall.PlayerService
 
     public float GetAddtionalDef()
     {
-      var addtional = 0;
+      var addtional = 0f;
       foreach (var (item, equip) in inventory)
       {
         if (equip) addtional += item.Def;
@@ -40,7 +40,7 @@ namespace Starfall.PlayerService
 
     public float GetAddtionalHp()
     {
-      var addtional = 0;
+      var addtional = 0f;
       foreach (var (item, equip) in inventory)
       {
         if (equip) addtional += item.Hp;

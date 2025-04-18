@@ -1,3 +1,5 @@
+using Spectre.Console;
+
 namespace Starfall.IO.CUI
 {
   public static class MenuUtil
@@ -15,14 +17,9 @@ namespace Starfall.IO.CUI
       {
         var (_, vy) = Console.GetCursorPosition();
         Console.SetCursorPosition(sx, vy);
-        Console.ResetColor();
-        if (i == select)
-        {
-          Console.BackgroundColor = ConsoleColor.White;
-          Console.ForegroundColor = ConsoleColor.Black;
-        }
-
-        Console.WriteLine(selection[i]);
+        // Console.ResetColor();
+        if (i == select) AnsiConsole.MarkupLine("[black on white]" + selection[i] + "[/]");
+        else AnsiConsole.MarkupLine(selection[i]);
       }
       Console.WriteLine();
 

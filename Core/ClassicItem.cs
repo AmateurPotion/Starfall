@@ -26,9 +26,9 @@ namespace Starfall.Core
     public ClassicItemType Type { get; set; } = ClassicItemType.None;
     public string Name { get; set; } = "undefined";
     public string Description { get; set; } = "no description";
-    public int Atk { get; set; } = 0;
-    public int Def { get; set; } = 0;
-    public int Hp { get; set; } = 0;
+    public float Atk { get; set; } = 0;
+    public float Def { get; set; } = 0;
+    public float Hp { get; set; } = 0;
     public int Price { get; set; } = 0;
 
     public ClassicItem()

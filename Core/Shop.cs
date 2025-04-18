@@ -1,6 +1,8 @@
+using System.Collections;
+
 namespace Starfall.Core
 {
-  public class Shop
+  public class Shop : IEnumerable<ClassicItem>
   {
     public List<ClassicItem> sellItems = [];
     public float sellRatio = 0.85f;
@@ -17,5 +19,17 @@ namespace Starfall.Core
         }
       }
     }
+
+    public ClassicItem this[int i]
+    {
+      get => sellItems[i];
+      set => sellItems[i] = value;
+    }
+
+    public IEnumerator<ClassicItem> GetEnumerator()
+      => sellItems.GetEnumerator();
+
+    IEnumerator IEnumerable.GetEnumerator()
+      => GetEnumerator();
   }
 }
