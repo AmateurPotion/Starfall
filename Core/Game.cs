@@ -375,6 +375,7 @@ namespace Starfall.Core
 
     public bool Save()
     {
+      GameData data = player;
       return false;
     }
   }

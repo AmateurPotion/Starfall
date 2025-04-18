@@ -51,14 +51,31 @@ namespace Starfall.PlayerService
     public static implicit operator Player(GameData data)
       => new()
       {
-        name = data.name,
-        level = data.level,
-        job = data.job,
-        atk = data.atk,
-        def = data.def,
-        hp = data.hp,
-        gold = data.gold,
-        inventory = data.inventory.ToDictionary(v => GameManager.items[v.name], v => v.equip)
+        name = data.Name,
+        level = data.Level,
+        job = data.Job,
+        atk = data.Atk,
+        def = data.Def,
+        hp = data.Hp,
+        gold = data.Gold,
+        inventory = data.Inventory.ToDictionary(v => GameManager.items[v.Name], v => v.Equip)
+      };
+
+    public static implicit operator GameData(Player player)
+      => new()
+      {
+        Name = player.name,
+        Level = player.level,
+        Job = player.job,
+        Atk = player.atk,
+        Def = player.def,
+        Hp = player.hp,
+        Gold = player.gold,
+        Inventory = [.. from pair in player.inventory select new GameDataItem()
+        {
+          Name = GameManager.items.FirstOrDefault(item => item.Value == pair.Key).Key,
+          Equip = pair.Value
+        }]
       };
   }
 }
