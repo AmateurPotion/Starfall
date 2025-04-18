@@ -73,5 +73,10 @@ namespace Starfall.IO
 
       return true;
     }
+
+    public static void GetStream(string path)
+    {
+
+    }
   }
 }

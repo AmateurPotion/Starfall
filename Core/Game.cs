@@ -1,4 +1,5 @@
 using System.Text;
+using MessagePack;
 using Spectre.Console;
 using Starfall.IO;
 using Starfall.IO.CUI;
@@ -376,6 +377,7 @@ namespace Starfall.Core
     public bool Save()
     {
       GameData data = player;
+      MessagePackSerializer.Serialize(data);
       return false;
     }
   }
