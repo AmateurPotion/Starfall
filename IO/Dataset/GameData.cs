@@ -1,4 +1,5 @@
 using MessagePack;
+using static Starfall.Core.CreatePlayer;
 
 namespace Starfall.IO.Dataset
 {
@@ -10,7 +11,7 @@ namespace Starfall.IO.Dataset
     [Key(nameof(Level))]
     public int Level { get; set; } = 1;
     [Key(nameof(Job))]
-    public string Job { get; set; } = "전사";
+    public JobName Job { get; set; } = JobName.None;
     [Key(nameof(Atk))]
     public float Atk { get; set; } = 10;
     [Key(nameof(Def))]

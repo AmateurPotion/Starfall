@@ -53,7 +53,7 @@ public class ClassicBattle()
                 AnsiConsole.MarkupLine($"{i + 1} Lv.{m.level} {m.name}  {hpText}");
             }
 
-            AnsiConsole.MarkupLine($"\n내 정보\nLv.{player.level} {player.name} {player.job}\nHP {player.TrueHp}/{player.hp}\n");
+            AnsiConsole.MarkupLine($"\n내 정보\nLv.{player.level} {player.name} {player.job.GetJobNameToKor()}\nHP {player.TrueHp}/{player.hp}\n");
 
             // 모든 몬스터가 죽었으면 전투 종료
             if (monsters.All(m => !m.IsAlive))

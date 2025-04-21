@@ -1,5 +1,6 @@
 using Starfall.Core.Classic;
 using Starfall.IO.Dataset;
+using static Starfall.Core.CreatePlayer;
 
 namespace Starfall.PlayerService
 {
@@ -7,7 +8,7 @@ namespace Starfall.PlayerService
   {
     public string name = "Chad";
     public int level = 1;
-    public string job = "전사";
+    public JobName job = JobName.None;
     public float atk = 10;
     public float TrueAtk => atk + GetAddtionalAtk() + (level - 1) * 0.5f;
     public float def = 5;
