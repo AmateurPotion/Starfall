@@ -41,8 +41,8 @@ namespace Starfall.IO
 
         public static void SetSaveJob(JobName job)
         {
-            CreateDir($"saves/world/{saveName}/{GetJobNameToKor(job)}");
-            saveJob = job;
+            //CreateDir($"saves/world/{saveName}/{GetJobNameToKor(job)}");
+            //saveJob = job;
         }
 
         // ========================================
