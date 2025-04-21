@@ -1,42 +1,19 @@
 using System.Text.Json;
-using Spectre.Console;
-using Starfall.Core;
 using Starfall.Core.Classic;
 using Starfall.IO;
 using Starfall.IO.Dataset;
-using Starfall.Worlds;
 
 namespace Starfall
 {
   public static class GameManager
   {
     public static bool Loaded { get; private set; } = false;
-    public static readonly Dictionary<string, Tile> tiles = [];
     public static readonly Dictionary<string, ClassicItem> items = [];
     public static void Init()
     {
       if (Loaded) return;
       StorageController.Init();
       Console.Title = "StarFall";
-
-      foreach (var info in new DirectoryInfo("./Resources/tiles/").GetFiles())
-      {
-        try
-        {
-          if (info.Name.Contains("Tile.json"))
-          {
-            var name = info.Name.Replace("Tile.json", "");
-            var stream = info.OpenRead();
-            var data = JsonSerializer.Deserialize<TileData>(stream);
-
-            tiles[name] = data;
-
-            stream.Close();
-          }
-        }
-        catch (JsonException)
-        { }
-      }
 
       foreach (var info in new DirectoryInfo("./Resources/items/").GetFiles())
       {

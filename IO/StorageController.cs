@@ -35,6 +35,7 @@ namespace Starfall.IO
     {
       return Directory.GetDirectories("./saves/world");
     }
+
     public static bool TryGetResource(string path, out Stream stream)
     {
       stream = Stream.Null;
