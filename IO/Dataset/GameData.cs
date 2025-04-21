@@ -32,6 +32,6 @@ namespace Starfall.IO.Dataset
     [Key(nameof(Name))]
     public string Name { get; set; }
     [Key(nameof(Equip))]
-    public bool Equip { get; set; }
+    public int Equip { get; set; }
   }
 }

@@ -17,7 +17,8 @@ public enum ClassicItemType
   Weapon = 1,
   Armor = 2,
   Accessory = 3,
-  Etc = 4
+  Consumable = 4,
+  Etc = 5
 }
 public struct ClassicItem
 {
