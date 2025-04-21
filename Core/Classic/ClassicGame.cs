@@ -300,6 +300,9 @@ public class ClassicGame(GameData data)
     {
       Console.Clear();
       var (label, def, fail, dReward) = dungeons[select];
+      
+      var battle = new ClassicBattle();
+      battle.StartBattle(player);
 
       if (player.TrueDef < def && random.Next(0, 100) < fail)
       {
