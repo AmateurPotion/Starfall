@@ -4,7 +4,6 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Unicode;
 using MessagePack;
-using Starfall.IO.Dataset;
 
 namespace Starfall.IO
 {

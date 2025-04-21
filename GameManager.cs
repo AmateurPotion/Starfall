@@ -39,7 +39,6 @@ namespace Starfall
 
     public static ClassicGame StartGame(GameData data)
     {
-      StorageController.SetSaveName("default");
       var game = new ClassicGame(data);
       game.Start();
 
