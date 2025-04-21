@@ -9,12 +9,12 @@ namespace Starfall
 {
   public static class GameManager
   {
-    public static bool loaded { get; private set; } = false;
+    public static bool Loaded { get; private set; } = false;
     public static readonly Dictionary<string, Tile> tiles = [];
     public static readonly Dictionary<string, ClassicItem> items = [];
     public static void Init()
     {
-      if (loaded) return;
+      if (Loaded) return;
       StorageController.Init();
 
       foreach (var info in new DirectoryInfo("./Resources/tiles/").GetFiles())
@@ -55,7 +55,7 @@ namespace Starfall
         { }
       }
 
-      loaded = true;
+      Loaded = true;
     }
 
     public static ClassicGame StartGame(GameData data)

@@ -1,4 +1,4 @@
-using Starfall.Core;
+using Starfall.Core.Classic;
 using Starfall.IO.Dataset;
 
 namespace Starfall.PlayerService
