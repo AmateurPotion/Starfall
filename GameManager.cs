@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Spectre.Console;
 using Starfall.Core;
 using Starfall.Core.Classic;
 using Starfall.IO;
@@ -16,6 +17,7 @@ namespace Starfall
     {
       if (Loaded) return;
       StorageController.Init();
+      Console.Title = "StarFall";
 
       foreach (var info in new DirectoryInfo("./Resources/tiles/").GetFiles())
       {
