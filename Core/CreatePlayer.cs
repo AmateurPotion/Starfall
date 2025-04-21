@@ -1,9 +1,6 @@
-﻿using Spectre.Console;
-using Starfall.Core.Classic;
-using Starfall.IO;
+﻿using Starfall.IO;
 using Starfall.IO.CUI;
 using Starfall.IO.Dataset;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Starfall.Core
 {
@@ -48,7 +45,7 @@ namespace Starfall.Core
 
             // 이름 설정
             Console.WriteLine(
-                "\n" + 
+                "\n" +
                 "원하시는 이름을 입력해주세요.");
 
             Console.WriteLine();
@@ -63,21 +60,21 @@ namespace Starfall.Core
 
             // ===========================
             // 메뉴 리스트 설정
-            switch (MenuUtil.OpenMenu("저장", "다시 입력","메인 메뉴로"))
+            switch (MenuUtil.OpenMenu("저장", "다시 입력", "메인 메뉴로"))
             {
                 case 0:
                     // 저장
                     //Console.WriteLine($"{name}");
                     StorageController.SetSaveName($"{name}");
                     GameData data = new GameData();
-                    data.Name = name; 
+                    data.Name = name;
                     SetPlayerJob(data);
                     break;
                 case 1:
                     SetPlayerName();
                     break;
-                case 2: 
-                case -1: GameManager.EnterMain();  break;
+                case 2:
+                case -1: GameManager.EnterMain(); break;
             }
             // ===========================
         }

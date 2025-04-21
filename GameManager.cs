@@ -1,103 +1,103 @@
 using System.Text.Json;
 using Spectre.Console;
-using Starfall.Core.Classic;
+using Starfall.Core;
 using Starfall.IO;
 using Starfall.IO.CUI;
 using Starfall.IO.Dataset;
-using static Starfall.Core.CreatePlayer; // √ﬂ∞° by. √÷øµ¿”
+using static Starfall.Core.CreatePlayer; // Ï∂îÍ∞Ä by. ÏµúÏòÅÏûÑ
 
 namespace Starfall
 {
-    public static class GameManager
+  public static class GameManager
+  {
+    public static bool Loaded { get; private set; } = false;
+    public static readonly Dictionary<string, Item> items = [];
+    public static void Init()
     {
-        public static bool Loaded { get; private set; } = false;
-        public static readonly Dictionary<string, ClassicItem> items = [];
-        public static void Init()
+      if (Loaded) return;
+      StorageController.Init();
+      Console.Title = "StarFall";
+
+      foreach (var info in new DirectoryInfo("./Resources/items/").GetFiles())
+      {
+        try
         {
-            if (Loaded) return;
-            StorageController.Init();
-            Console.Title = "StarFall";
+          if (info.Name.Contains(".json"))
+          {
+            var name = info.Name.Replace(".json", "");
+            var stream = info.OpenRead();
+            var data = JsonSerializer.Deserialize<Item>(stream);
 
-            foreach (var info in new DirectoryInfo("./Resources/items/").GetFiles())
-            {
-                try
-                {
-                    if (info.Name.Contains(".json"))
-                    {
-                        var name = info.Name.Replace(".json", "");
-                        var stream = info.OpenRead();
-                        var data = JsonSerializer.Deserialize<ClassicItem>(stream);
+            items[name] = data;
 
-                        items[name] = data;
-
-                        stream.Close();
-                    }
-                }
-                catch (JsonException)
-                { }
-            }
-
-            Loaded = true;
+            stream.Close();
+          }
         }
+        catch (JsonException)
+        { }
+      }
 
-        public static ClassicGame StartGame(GameData data)
-        {
-            var game = new ClassicGame(data);
-            game.Start();
-
-            return game;
-        }
-
-        public static void JoinGame()
-        {
-
-        }
-
-        // √ﬂ∞° by. √÷øµ¿” 
-        // Program.csø°º≠ ∞°¡Æø». 
-        public static void EnterMain()
-        {
-        Menu:
-            Console.Clear();
-            ConsoleUtil.PrintTextFile("Starfall.Resources.intro.txt", ConsoleColor.DarkMagenta, ConsoleColor.Green);
-            Console.WriteLine();
-
-            StorageController.SetSaveName("default");
-            switch (MenuUtil.OpenMenu("ªı∑ŒøÓ ø©¡§", "µ•¿Ã≈Õ ∫“∑Øø¿±‚", "¥Ÿ∏• ø©¡§ ¬¸ø©"))
-            {
-                case 0:
-                    // ªı∑ŒøÓ ø©¡§ - ªı ∞‘¿”
-                    // √ﬂ∞° by. √÷øµ¿” 
-                    // ºˆ¡§ by. √÷øµ¿” 
-                    // «√∑π¿ÃæÓ √π ª˝º∫
-                    CreateNewPlayer();
-                    break;
-
-                case 1:
-                    // µ•¿Ã≈Õ ∫“∑Øø¿±‚ - µ•¿Ã≈Õ ∫“∑Øø¿±‚
-                    Console.Clear();
-                    var menu = (from path in StorageController.GetSaveNames() select path.Replace("./saves/world\\", "")).ToArray();
-
-                    AnsiConsole.MarkupLine("∫“∑Øø√ µ•¿Ã≈Õ∏¶ º±≈√«œººø‰. \n");
-                    var select = MenuUtil.OpenMenu([.. menu, "\nµπæ∆∞°±‚"]);
-
-                    if (select > -1 && select < menu.Length)
-                    {
-                        StorageController.SetSaveName(menu[select]);
-                        GameManager.StartGame(StorageController.LoadBinary<GameData>("data"));
-                    }
-                    else goto Menu;
-                    break;
-
-                case 2:
-                    // ¥Ÿ∏• ø©¡§ ¬¸ø© - ¥Ÿ∏• ø©¡§ ¬¸ø©
-                    GameManager.JoinGame();
-                    Console.WriteLine("∞≥πﬂ¡ﬂ¿‘¥œ¥Ÿ.");
-                    Console.ReadKey();
-                    goto Menu;
-
-                case -1: goto Menu;
-            }
-        }
+      Loaded = true;
     }
+
+    public static Game StartGame(GameData data)
+    {
+      var game = new Game(data);
+      game.Start();
+
+      return game;
+    }
+
+    public static void JoinGame()
+    {
+
+    }
+
+    // Ï∂îÍ∞Ä by. ÏµúÏòÅÏûÑ 
+    // Program.csÏóêÏÑú Í∞ÄÏ†∏Ïò¥. 
+    public static void EnterMain()
+    {
+    Menu:
+      Console.Clear();
+      ConsoleUtil.PrintTextFile("Starfall.Resources.intro.txt", ConsoleColor.DarkMagenta, ConsoleColor.Green);
+      Console.WriteLine();
+
+      StorageController.SetSaveName("default");
+      switch (MenuUtil.OpenMenu("ÏÉàÎ°úÏö¥ Ïó¨Ï†ï", "Îç∞Ïù¥ÌÑ∞ Î∂àÎü¨Ïò§Í∏∞", "Îã§Î•∏ Ïó¨Ï†ï Ï∞∏Ïó¨"))
+      {
+        case 0:
+          // ÏÉàÎ°úÏö¥ Ïó¨Ï†ï - ÏÉà Í≤åÏûÑ
+          // Ï∂îÍ∞Ä by. ÏµúÏòÅÏûÑ 
+          // ÏàòÏ†ï by. ÏµúÏòÅÏûÑ 
+          // ÌîåÎ†àÏù¥Ïñ¥ Ï≤´ ÏÉùÏÑ±
+          CreateNewPlayer();
+          break;
+
+        case 1:
+          // Îç∞Ïù¥ÌÑ∞ Î∂àÎü¨Ïò§Í∏∞ - Îç∞Ïù¥ÌÑ∞ Î∂àÎü¨Ïò§Í∏∞
+          Console.Clear();
+          var menu = (from path in StorageController.GetSaveNames() select path.Replace("./saves/world\\", "")).ToArray();
+
+          AnsiConsole.MarkupLine("Î∂àÎü¨Ïò¨ Îç∞Ïù¥ÌÑ∞Î•º ÏÑ†ÌÉùÌïòÏÑ∏Ïöî. \n");
+          var select = MenuUtil.OpenMenu([.. menu, "\nÎèåÏïÑÍ∞ÄÍ∏∞"]);
+
+          if (select > -1 && select < menu.Length)
+          {
+            StorageController.SetSaveName(menu[select]);
+            GameManager.StartGame(StorageController.LoadBinary<GameData>("data"));
+          }
+          else goto Menu;
+          break;
+
+        case 2:
+          // Îã§Î•∏ Ïó¨Ï†ï Ï∞∏Ïó¨ - Îã§Î•∏ Ïó¨Ï†ï Ï∞∏Ïó¨
+          GameManager.JoinGame();
+          Console.WriteLine("Í∞úÎ∞úÏ§ëÏûÖÎãàÎã§.");
+          Console.ReadKey();
+          goto Menu;
+
+        case -1: goto Menu;
+      }
+    }
+  }
 }

@@ -1,11 +1,8 @@
-using System.Text;
 using Spectre.Console;
-using Starfall.IO;
 using Starfall.IO.CUI;
-using Starfall.IO.Dataset;
 using Starfall.PlayerService;
 
-namespace Starfall.Core.Classic;
+namespace Starfall.Core;
 // 몬스터 클래스 정의
 class Monster
 {
@@ -28,7 +25,7 @@ class Monster
     public void Dead() => Console.WriteLine($"{name}이 죽었습니다");
 }
 
-public class ClassicBattle()
+public class Battle()
 {
     public void StartBattle(Player player)
     {

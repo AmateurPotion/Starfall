@@ -1,12 +1,12 @@
 using System.Collections;
 
-namespace Starfall.Core.Classic;
-public class ClassicShop : IEnumerable<ClassicItem>
+namespace Starfall.Core;
+public class Shop : IEnumerable<Item>
 {
-  public List<ClassicItem> sellItems = [];
+  public List<Item> sellItems = [];
   public float sellRatio = 0.85f;
 
-  public ClassicShop(params string[] itemNames)
+  public Shop(params string[] itemNames)
   {
     var itemDic = GameManager.items;
 
@@ -19,13 +19,13 @@ public class ClassicShop : IEnumerable<ClassicItem>
     }
   }
 
-  public ClassicItem this[int i]
+  public Item this[int i]
   {
     get => sellItems[i];
     set => sellItems[i] = value;
   }
 
-  public IEnumerator<ClassicItem> GetEnumerator()
+  public IEnumerator<Item> GetEnumerator()
     => sellItems.GetEnumerator();
 
   IEnumerator IEnumerable.GetEnumerator()

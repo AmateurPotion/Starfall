@@ -1,4 +1,4 @@
-using Starfall.Core.Classic;
+using Starfall.Core;
 using Starfall.IO.Dataset;
 using static Starfall.Core.CreatePlayer;
 
@@ -17,14 +17,14 @@ namespace Starfall.PlayerService
     public float TrueHp => hp + GetAddtionalHp();
     public int gold = 1500;
 
-    public Dictionary<ClassicItem, int> inventory = [];
+    public Dictionary<Item, int> inventory = [];
 
     public float GetAddtionalAtk()
     {
       var addtional = 0f;
       foreach (var (item, equip) in inventory)
       {
-        if (item.Type != ClassicItemType.Consumable && equip == 1) addtional += item.Atk;
+        if (item.Type != ItemType.Consumable && equip == 1) addtional += item.Atk;
       }
       return addtional;
     }
@@ -34,7 +34,7 @@ namespace Starfall.PlayerService
       var addtional = 0f;
       foreach (var (item, equip) in inventory)
       {
-        if (item.Type != ClassicItemType.Consumable && equip == 1) addtional += item.Def;
+        if (item.Type != ItemType.Consumable && equip == 1) addtional += item.Def;
       }
       return addtional;
     }
@@ -44,7 +44,7 @@ namespace Starfall.PlayerService
       var addtional = 0f;
       foreach (var (item, equip) in inventory)
       {
-        if (item.Type != ClassicItemType.Consumable && equip == 1) addtional += item.Hp;
+        if (item.Type != ItemType.Consumable && equip == 1) addtional += item.Hp;
       }
       return addtional;
     }
