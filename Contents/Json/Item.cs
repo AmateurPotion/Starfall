@@ -1,4 +1,4 @@
-namespace Starfall.Core;
+namespace Starfall.Contents.Json;
 public static class ItemTypeUtill
 {
   public static string GetName(this ItemType type) => type switch

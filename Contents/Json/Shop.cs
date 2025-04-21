@@ -1,6 +1,6 @@
 using System.Collections;
 
-namespace Starfall.Core;
+namespace Starfall.Contents.Json;
 public class Shop : IEnumerable<Item>
 {
   public List<Item> sellItems = [];

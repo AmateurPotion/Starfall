@@ -1,10 +1,10 @@
 using System.Text.Json;
 using Spectre.Console;
+using Starfall.Contents.Binary;
+using Starfall.Contents.Json;
 using Starfall.Core;
 using Starfall.IO;
 using Starfall.IO.CUI;
-using Starfall.IO.Dataset;
-using static Starfall.Core.CreatePlayer; // 추가 by. 최영임
 
 namespace Starfall
 {
@@ -70,7 +70,7 @@ namespace Starfall
           // 추가 by. 최영임 
           // 수정 by. 최영임 
           // 플레이어 첫 생성
-          CreateNewPlayer();
+          CreatePlayer.CreateNewPlayer();
           break;
 
         case 1:

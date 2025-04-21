@@ -1,6 +1,6 @@
-﻿using Starfall.IO;
+﻿using Starfall.Contents.Binary;
+using Starfall.IO;
 using Starfall.IO.CUI;
-using Starfall.IO.Dataset;
 
 namespace Starfall.Core
 {
@@ -66,7 +66,7 @@ namespace Starfall.Core
                     // 저장
                     //Console.WriteLine($"{name}");
                     StorageController.SetSaveName($"{name}");
-                    GameData data = new GameData();
+                    var data = new GameData();
                     data.Name = name;
                     SetPlayerJob(data);
                     break;

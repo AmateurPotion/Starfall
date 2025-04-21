@@ -1,5 +1,5 @@
-using Starfall.Core;
-using Starfall.IO.Dataset;
+using Starfall.Contents.Binary;
+using Starfall.Contents.Json;
 using static Starfall.Core.CreatePlayer;
 
 namespace Starfall.PlayerService

@@ -1,4 +1,4 @@
-namespace Starfall.Core
+namespace Starfall.Contents.Json
 {
   public struct Dungeon
     (string label = "", float requireDef = 0, int failureProbability = 40, int reward = 1000)
