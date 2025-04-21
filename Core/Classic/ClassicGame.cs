@@ -91,7 +91,8 @@ public class ClassicGame(GameData data)
     {
       var option = new StringBuilder();
 
-      option.Append($"- {item.Type.GetName()} / {(equip ? "[[E]]" : "")}{item.Name} | ");
+
+      option.Append($"- {item.Type.GetName()} / {(equip == 1 ? "[[E]]" : "")}{item.Name} | ");
       var stats = new List<string>();
       if (item.Atk != 0) stats.Add("공격력 " + (item.Atk > 0 ? "+" + item.Atk : item.Atk));
       if (item.Def != 0) stats.Add("방어력 " + (item.Def > 0 ? "+" + item.Def : item.Def));
@@ -134,7 +135,7 @@ public class ClassicGame(GameData data)
     foreach (var (item, equip) in player.inventory)
     {
       var option = new StringBuilder();
-      option.Append($"- {index + 1} / {item.Type.GetName()} / {(equip ? "[[E]]" : "")}{item.Name} | ");
+      option.Append($"- {index + 1} / {item.Type.GetName()} / {(equip == 1 ? "[[E]]" : "")}{item.Name} | ");
       var stats = new List<string>();
       if (item.Atk != 0) stats.Add("공격력 " + (item.Atk > 0 ? "+" : "") + item.Atk);
       if (item.Def != 0) stats.Add("방어력 " + (item.Def > 0 ? "+" : "") + item.Def);
@@ -153,14 +154,15 @@ public class ClassicGame(GameData data)
     {
       case var i when i > -1 && i < index:
         var item = items[i];
-        if (player.inventory[item] = !player.inventory[item])
+        if ((player.inventory[item] = -player.inventory[item]) == 1)
         {
           var type = item.Type;
           foreach (var (target, equip) in player.inventory)
           {
-            if (equip && target.Type == type && target != item)
+            if (equip == 1 && target != item
+            && target.Type == type)
             {
-              player.inventory[target] = false;
+              player.inventory[target] = -1;
             }
           }
         }
@@ -228,7 +230,7 @@ public class ClassicGame(GameData data)
   {
     Console.Clear();
     var equip = "";
-    if (player.inventory.TryGetValue(item, out var e) && e)
+    if (player.inventory.TryGetValue(item, out var e) && e == 1)
     {
       equip = "[[E]]";
     }
@@ -260,7 +262,7 @@ public class ClassicGame(GameData data)
         if (player.gold >= item.Price)
         {
           player.gold -= item.Price;
-          player.inventory.Add(item, false);
+          player.inventory.Add(item, -1);
           AnsiConsole.MarkupLine($"\n구매를 완료했습니다.");
         }
         else AnsiConsole.MarkupLine("\nGold 가 부족합니다.");
