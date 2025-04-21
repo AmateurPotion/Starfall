@@ -1,4 +1,4 @@
-namespace Starfall.Core
+namespace Starfall.Core.Classic
 {
   public struct ClassicDungeon
     (string label = "", float requireDef = 0, int failureProbability = 40, int reward = 1000)

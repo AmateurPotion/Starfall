@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Starfall.Core;
+using Starfall.Core.Classic;
 using Starfall.IO;
 using Starfall.IO.Dataset;
 using Starfall.Worlds;
@@ -57,10 +58,10 @@ namespace Starfall
       loaded = true;
     }
 
-    public static Game StartGame(GameData data)
+    public static ClassicGame StartGame(GameData data)
     {
       StorageController.SetSaveName("default");
-      var game = new Game(data);
+      var game = new ClassicGame(data);
       game.Start();
 
       return game;
