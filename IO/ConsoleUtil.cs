@@ -1,4 +1,5 @@
 using System.Reflection;
+using Spectre.Console;
 
 namespace Starfall.IO
 {
@@ -18,22 +19,15 @@ namespace Starfall.IO
       };
     }
 
-    public static void PrintTextFile(string path, ConsoleColor color, ConsoleColor background)
+    public static void PrintTextFile(string path)
     {
       if (StorageController.TryGetResource(path, out var stream))
       {
-        var Close = StartCUIPart();
-        Console.ForegroundColor = color;
-        Console.BackgroundColor = background;
-
         using var reader = new StreamReader(stream);
-        Console.WriteLine(reader.ReadToEnd());
+        AnsiConsole.MarkupLine(reader.ReadToEnd());
         reader.Close();
         stream.Close();
-        Close();
       }
     }
-
-    public static void PrintTextFile(string path) => PrintTextFile(path, Console.ForegroundColor, Console.BackgroundColor);
   }
 }
