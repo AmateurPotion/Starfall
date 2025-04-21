@@ -27,26 +27,14 @@ namespace Starfall.IO
 
         public static void SetSaveName(string name)
         {
-            CreateDir($"saves/world/{saveName}");
             saveName = name;
+            CreateDir($"saves/world/{saveName}");
         }
 
         public static string[] GetSaveNames()
         {
             return Directory.GetDirectories("./saves/world");
         }
-
-        // ========================================
-        // 추가 by. 최영임
-
-        public static void SetSaveJob(JobName job)
-        {
-            //CreateDir($"saves/world/{saveName}/{GetJobNameToKor(job)}");
-            //saveJob = job;
-        }
-
-        // ========================================
-        // ========================================
 
         public static bool TryGetResource(string path, out Stream stream)
         {
@@ -64,7 +52,11 @@ namespace Starfall.IO
         private static void CreateDir(string path)
         {
             var info = new DirectoryInfo(path);
-            if (!info.Exists) info.Create();
+            if (!info.Exists)
+            {
+                Console.WriteLine(path);
+                info.Create(); 
+            }
         }
 
         public static void SaveObj(string path, object data)

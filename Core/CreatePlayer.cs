@@ -1,21 +1,29 @@
 ﻿using Spectre.Console;
+using Starfall.Core.Classic;
 using Starfall.IO;
 using Starfall.IO.CUI;
+using Starfall.IO.Dataset;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Starfall.Core
 {
-    public class CreatePlayer
+    public static class CreatePlayer
     {
         #region Job Name
         public enum JobName
         {
-            None = -1,
-            Warrior = 0,
-            Wizard = 1,
-            Rogue = 2,
+            None = 0,
+            Warrior = 1,
+            Wizard = 2,
+            Rogue = 3,
         }
 
-        public static string GetJobNameToKor(JobName className) => className switch
+        /// <summary>
+        /// ex) JobName.None.GetJobNameToKor()
+        /// </summary>
+        /// <param name="className"></param>
+        /// <returns></returns>
+        public static string GetJobNameToKor(this JobName className) => className switch
         {
             JobName.None => "없음",
             JobName.Warrior => "전사",
@@ -32,9 +40,11 @@ namespace Starfall.Core
 
         static void SetPlayerName()
         {
+            // ===========================
             Console.Clear();
             ConsoleUtil.PrintTextFile("Starfall.Resources.intro.txt", ConsoleColor.DarkMagenta, ConsoleColor.Green);
             Console.WriteLine();
+            // ===========================
 
             // 이름 설정
             Console.WriteLine(
@@ -57,8 +67,11 @@ namespace Starfall.Core
             {
                 case 0:
                     // 저장
+                    //Console.WriteLine($"{name}");
                     StorageController.SetSaveName($"{name}");
-                    SetPlayerJob();
+                    GameData data = new GameData();
+                    data.Name = name; 
+                    SetPlayerJob(data);
                     break;
                 case 1:
                     SetPlayerName();
@@ -69,11 +82,13 @@ namespace Starfall.Core
             // ===========================
         }
 
-        static void SetPlayerJob()
+        static void SetPlayerJob(GameData data)
         {
-            Console.Clear();
+            // ===========================
+            //Console.Clear();
             ConsoleUtil.PrintTextFile("Starfall.Resources.intro.txt", ConsoleColor.DarkMagenta, ConsoleColor.Green);
             Console.WriteLine();
+            // ===========================
 
             // 메뉴 리스트 설정
             var selections = new List<string>();
@@ -82,7 +97,7 @@ namespace Starfall.Core
             {
                 if (jobName == JobName.None) continue;
 
-                selections.Add(GetJobNameToKor(jobName));
+                selections.Add(jobName.GetJobNameToKor());
             }
 
             // ===========================
@@ -99,9 +114,9 @@ namespace Starfall.Core
             if (selection < 0) { SetPlayerName(); }
             else
             {
-                StorageController.SetSaveJob((JobName)selection);
+                data.Job = (JobName)selection;
                 // 메뉴 씬으로 이동
-                GameManager.StartGame(new());
+                GameManager.StartGame(data);
             }
             // ===========================
         }
