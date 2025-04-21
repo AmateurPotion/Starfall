@@ -76,14 +76,13 @@ namespace Starfall.Core
             Console.WriteLine();
 
             // 메뉴 리스트 설정
-            var selections = new Dictionary<int, string>();
+            var selections = new List<string>();
 
-            int index = 0;
             foreach (JobName jobName in Enum.GetValues(typeof(JobName)))
             {
                 if (jobName == JobName.None) continue;
 
-                selections.Add(index++, GetJobNameToKor(jobName));
+                selections.Add(GetJobNameToKor(jobName));
             }
 
             // ===========================
