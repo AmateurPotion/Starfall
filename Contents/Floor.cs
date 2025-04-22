@@ -8,6 +8,7 @@ public class Floor
   public readonly int length;
   public List<StageNode>[] data;
   public Vector2Int current = new();
+  public int Height => data.Length;
   public Floor(int length = 5, int height = 3)
   {
     this.length = length + 3;
@@ -74,21 +75,51 @@ public class Floor
        orderby random.Next()
        select line[n]).GetEnumerator().Current.type = StageType.Shop;
     }
-
-    // 경로 생성
-
-
     #endregion
   }
+
+  private Vector2Int Focus(bool up)
+  {
+    var (px, py) = current;
+    if (px == 0)
+    {
+    }
+    else
+    {
+
+    }
+
+    return beforeFocus;
+  }
+
+  private Vector2Int beforeFocus = new(0, 0);
 
   public void Render()
   {
     Console.Clear();
     var (sx, sy) = Console.GetCursorPosition();
+    var focus = new Vector2Int();
+
+    switch (Console.ReadKey().Key)
+    {
+      case ConsoleKey.UpArrow:
+        focus = Focus(true);
+        break;
+
+      case ConsoleKey.DownArrow:
+        focus = Focus(false);
+        break;
+
+      case ConsoleKey.Enter:
+        break;
+    }
+
 
     for (int x = 0; x < length; x++)
     {
 
     }
+
+    Render();
   }
 }
