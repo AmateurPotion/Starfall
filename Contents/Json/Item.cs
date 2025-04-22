@@ -31,6 +31,7 @@ public struct Item
   public float Atk { get; set; } = 0;
   public float Def { get; set; } = 0;
   public float Hp { get; set; } = 0;
+  public float Mp { get; set; } = 0;
   public int Price { get; set; } = 0;
 
   public Item()
