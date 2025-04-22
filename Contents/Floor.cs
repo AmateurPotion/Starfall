@@ -1,10 +1,13 @@
+using Starfall.Utils;
+
 namespace Starfall.Contents;
 
 public class Floor
 {
   public readonly int length;
   public List<StageNode>[] data;
-  public Floor(int length, int height = 3)
+  public Vector2Int current = new();
+  public Floor(int length = 5, int height = 3)
   {
     this.length = length;
     data = new List<StageNode>[height];
@@ -27,7 +30,13 @@ public class Floor
           // 보스 노드
           var i when i == length - 1 => bossNode,
           // 무작위 노드 생성
-          _ => new() { }
+          _ => new()
+          {
+            type = StageType.Battle,
+            middle = true,
+            top = y != 0,
+            bottom = y != data.Length - 1
+          }
         });
       }
     }
