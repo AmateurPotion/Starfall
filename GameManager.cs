@@ -6,12 +6,14 @@ using Starfall.Core;
 using Starfall.IO;
 using Starfall.IO.CUI;
 
+
 namespace Starfall
 {
     public static class GameManager
     {
         public static bool Loaded { get; private set; } = false;
         public static readonly Dictionary<string, Item> items = [];
+        public static readonly Dictionary<string, MonsterData> monsters = [];
         public static readonly Dictionary<string, QuestData> quests = [];
 
         public static void Init()
@@ -36,8 +38,27 @@ namespace Starfall
                         stream.Close();
                     }
                 }
-                catch (JsonException)
-                { }
+                catch (JsonException) { }
+
+            }
+          
+            // foreach 문 넣었음   by. 박재현 
+            foreach (var info in new DirectoryInfo("./Resources/monster/").GetFiles())
+            {
+                try
+                {
+                    if (info.Name.Contains(".json"))
+                    {
+                        var name = info.Name.Replace(".json", "");
+                        var stream = info.OpenRead();
+                        var data = JsonSerializer.Deserialize<MonsterData>(stream);
+
+                        monsters[name] = data;
+
+                        stream.Close();
+                    }
+                }
+                catch (JsonException) { }
             }
 
             // 추가 by. 최영임
@@ -73,7 +94,7 @@ namespace Starfall
         {
 
         }
-
+      
         // 추가 by. 최영임 
         // Program.cs에서 가져옴. 
         public static void EnterMain()
