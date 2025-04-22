@@ -5,6 +5,12 @@ namespace Starfall.Utils
     public int x;
     public int y;
 
+    public Vector2Int()
+    {
+      x = 0;
+      y = 0;
+    }
+
     public Vector2Int(int x = 0, int y = 0)
     {
       this.x = x;
