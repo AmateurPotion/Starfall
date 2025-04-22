@@ -14,13 +14,16 @@ namespace Starfall
         public static bool Loaded { get; private set; } = false;
         public static readonly Dictionary<string, Item> items = [];
         public static readonly Dictionary<string, MonsterData> monsters = [];
+        public static readonly Dictionary<string, QuestData> quests = [];
+
         public static void Init()
         {
             if (Loaded) return;
             StorageController.Init();
             Console.Title = "StarFall";
 
-            foreach (var info in new DirectoryInfo("./Resources/item/").GetFiles())
+            // Item Json 파일 불러오기
+            foreach (var info in new DirectoryInfo("./Resources/items/").GetFiles())
             {
                 try
                 {
@@ -38,6 +41,7 @@ namespace Starfall
                 catch (JsonException) { }
 
             }
+          
             // foreach 문 넣었음   by. 박재현 
             foreach (var info in new DirectoryInfo("./Resources/monster/").GetFiles())
             {
@@ -57,10 +61,26 @@ namespace Starfall
                 catch (JsonException) { }
             }
 
+            // 추가 by. 최영임
+            // Quest Json 파일 불러오기
+            // json파일 필터 *json
+            foreach (var file in new DirectoryInfo("./Resources/quests/").GetFiles("*.json")) 
+            {
+                var name = Path.GetFileNameWithoutExtension(file.Name); // 확장자 제거
+
+                if (!file.Exists)
+                    continue;
+
+                using var stream = file.OpenRead(); // stream이 끝나면 자동 닫기
+
+                var data = JsonSerializer.Deserialize<QuestData>(stream);
+
+                if (data is not null) { quests[name] = data; }
+                else { Console.WriteLine($"역직렬화 실패: {file.Name}"); }
+            }
+
             Loaded = true;
         }
-
-
 
         public static Game StartGame(GameData data)
         {
@@ -74,7 +94,7 @@ namespace Starfall
         {
 
         }
-
+      
         // 추가 by. 최영임 
         // Program.cs에서 가져옴. 
         public static void EnterMain()
