@@ -46,18 +46,17 @@ public static class CreatePlayer
 
         // 이름 설정
         AnsiConsole.MarkupLine("""
-
-    원하시는 이름을 입력해주세요.
-    """);
+            원하시는 이름을 입력해주세요.
+            """);
 
         Console.WriteLine();
         string input = Console.ReadLine() ?? "";
 
         AnsiConsole.MarkupLine($"""
             
-    입력하신 이름은 [[{input}]] 입니다.
+            입력하신 이름은 [[{input}]] 입니다.
 
-    """);
+            """);
 
         string name = input;
 
@@ -92,6 +91,13 @@ public static class CreatePlayer
         ConsoleUtil.PrintTextFile("Starfall.Resources.intro.txt");
         Console.WriteLine();
         // ===========================
+
+        AnsiConsole.MarkupLine($"""
+            
+            원하시는 직업을 선택해주세요.
+
+            """);
+
 
         // 메뉴 리스트 Linq 구문 이용해서 압축
         var jobNames = (
