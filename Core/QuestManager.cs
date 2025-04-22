@@ -24,7 +24,7 @@ namespace Starfall.Core
     {
         public void ShowQuestList()
         {
-    `           // 퀘스트 리스트 Linq 구문 이용해서 압축
+             // 퀘스트 리스트 Linq 구문 이용해서 압축
             var questTitles = (from quest in GameManager.quests select quest.Value.Title).ToArray();
 
             int selection = MenuUtil.OpenMenu(questTitles);
