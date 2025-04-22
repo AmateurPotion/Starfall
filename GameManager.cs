@@ -59,7 +59,7 @@ namespace Starfall
     {
     Menu:
       Console.Clear();
-      ConsoleUtil.PrintTextFile("Starfall.Resources.intro.txt", ConsoleColor.DarkMagenta, ConsoleColor.Green);
+      ConsoleUtil.PrintTextFile("Starfall.Resources.intro.txt");
       Console.WriteLine();
 
       StorageController.SetSaveName("default");

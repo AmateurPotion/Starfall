@@ -1,2 +1,4 @@
+[DarkMagenta on Green]
 중앙 코어 활성화 완료.
 선택을 확인하십시오.
+[/]
