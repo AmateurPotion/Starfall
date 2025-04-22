@@ -3,7 +3,7 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Unicode;
 using MessagePack;
-using static Starfall.Core.CreatePlayer; // Ãß°¡ by. ÃÖ¿µÀÓ
+using static Starfall.Core.CreatePlayer; // ï¿½ß°ï¿½ by. ï¿½Ö¿ï¿½ï¿½ï¿½
 
 namespace Starfall.IO
 {
@@ -55,17 +55,17 @@ namespace Starfall.IO
             if (!info.Exists)
             {
                 Console.WriteLine(path);
-                info.Create(); 
+                info.Create();
             }
         }
 
-        public static void SaveObj(string path, object data)
+        public static void SaveJson(string path, object data)
         {
             var jsonString = JsonSerializer.Serialize(data, jsonOption);
             File.WriteAllText(Path.Combine("./saves/world/", saveName, path + ".json"), jsonString);
         }
 
-        public static bool LoadObj<T>(string path, out T? obj)
+        public static bool LoadJson<T>(string path, out T? obj)
         {
             obj = default;
 
