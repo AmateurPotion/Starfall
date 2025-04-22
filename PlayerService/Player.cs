@@ -1,5 +1,6 @@
 using Starfall.Contents.Binary;
 using Starfall.Contents.Json;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 using static Starfall.Core.CreatePlayer;
 
 namespace Starfall.PlayerService
@@ -14,7 +15,9 @@ namespace Starfall.PlayerService
     public float def = 5;
     public float TrueDef => def + GetAddtionalDef() + (level - 1);
     public float hp = 100;
+    public float mp = 50;
     public float TrueHp => hp + GetAddtionalHp();
+    public float TrueMp => mp + GetAddtionalMp();
     public int gold = 1500;
 
     public Dictionary<Item, int> inventory = [];
@@ -49,7 +52,17 @@ namespace Starfall.PlayerService
       return addtional;
     }
 
-    public static implicit operator Player(GameData data)
+    public float GetAddtionalMp()
+    {
+        var addtional = 0f;
+        foreach (var (item, equip) in inventory)
+        {
+            if (item.Type != ItemType.Consumable && equip == 1) addtional += item.Mp;
+        }
+        return addtional;
+    }
+
+        public static implicit operator Player(GameData data)
       => new()
       {
         name = data.Name,
@@ -58,6 +71,7 @@ namespace Starfall.PlayerService
         atk = data.Atk,
         def = data.Def,
         hp = data.Hp,
+        mp = data.Mp,
         gold = data.Gold,
         inventory = data.Inventory.ToDictionary(v => GameManager.items[v.Name], v => v.Equip)
       };
@@ -71,6 +85,7 @@ namespace Starfall.PlayerService
         Atk = player.atk,
         Def = player.def,
         Hp = player.hp,
+        Mp = player.mp,
         Gold = player.gold,
         Inventory = [.. from pair in player.inventory select new GameDataItem()
         {

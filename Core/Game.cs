@@ -76,6 +76,7 @@ public class Game(GameData data)
       공격력 : [#d1949e]{player.TrueAtk}[/] {StatView(player.GetAddtionalAtk())}
       방어력 : [#d1949e]{player.TrueDef}[/] {StatView(player.GetAddtionalDef())}
       체 력 : [#d1949e]{player.TrueHp}[/] {StatView(player.GetAddtionalHp())}
+      마 력 : [#d1949e]{player.TrueMp}[/] {StatView(player.GetAddtionalMp())}
       Gold : [#d1949e]{player.gold}[/] G
       """);
 
@@ -105,6 +106,7 @@ public class Game(GameData data)
             if (item.Atk != 0) stats.Add("공격력 " + (item.Atk > 0 ? "+" + item.Atk : item.Atk));
             if (item.Def != 0) stats.Add("방어력 " + (item.Def > 0 ? "+" + item.Def : item.Def));
             if (item.Hp != 0) stats.Add("생명력 " + (item.Hp > 0 ? "+" + item.Hp : item.Hp));
+            if (item.Mp != 0) stats.Add("정신력 " + (item.Mp > 0 ? "+" + item.Mp : item.Mp));
             option.Append(string.Join(" / ", stats));
             option.Append(" | " + item.Description);
 
@@ -148,6 +150,7 @@ public class Game(GameData data)
             if (item.Atk != 0) stats.Add("공격력 " + (item.Atk > 0 ? "+" : "") + item.Atk);
             if (item.Def != 0) stats.Add("방어력 " + (item.Def > 0 ? "+" : "") + item.Def);
             if (item.Hp != 0) stats.Add("생명력 " + (item.Hp > 0 ? "+" : "") + item.Hp);
+            if (item.Mp != 0) stats.Add("정신력 " + (item.Mp > 0 ? "+" : "") + item.Mp);
             option.Append(string.Join(" / ", stats));
             option.Append(" | " + item.Description);
 
@@ -207,6 +210,7 @@ public class Game(GameData data)
             if (item.Atk != 0) stats.Add("공격력 " + StatStr(item.Atk));
             if (item.Def != 0) stats.Add("방어력 " + StatStr(item.Def));
             if (item.Hp != 0) stats.Add("생명력 " + StatStr(item.Hp));
+            if (item.Mp != 0) stats.Add("정신력 " + StatStr(item.Mp));
             option.Append(string.Join(" / ", stats));
             option.Append($" | {item.Description} | ");
             option.Append(player.inventory.ContainsKey(item) ? "구매완료" : item.Price + " G");
@@ -248,6 +252,7 @@ public class Game(GameData data)
       공격력 {StatStr(item.Atk)}
       방어력 {StatStr(item.Def)}
       생명력 {StatStr(item.Hp)}
+      정신력 {StatStr(item.Mp)}
 
       """);
         if (player.inventory.ContainsKey(item))
