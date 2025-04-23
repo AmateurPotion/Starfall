@@ -6,6 +6,7 @@ using Starfall.Core;
 using Starfall.Core.Quest;
 using Starfall.IO;
 using Starfall.IO.CUI;
+using Starfall.Contents;
 
 
 namespace Starfall
@@ -16,6 +17,8 @@ namespace Starfall
 		public static readonly Dictionary<string, Item> items = [];
 		public static readonly Dictionary<string, MonsterData> monsters = [];
 		public static readonly Dictionary<string, QuestData> quests = [];
+		public static readonly Dictionary<string, Skill> skills = [];
+
 
 		public static void Init()
 		{
@@ -65,20 +68,43 @@ namespace Starfall
 			// 추가 by. 최영임
 			// Quest Json 파일 불러오기
 			//// json파일 필터 *json
-			foreach (var file in new DirectoryInfo("./Resources/quests/").GetFiles("*.json"))
+			//foreach (var file in new DirectoryInfo("./Resources/quests/").GetFiles("*.json"))
+			//{
+			//    var name = Path.GetFileNameWithoutExtension(file.Name); // 확장자 제거
+
+			//    if (!file.Exists)
+			//        continue;
+
+			//    using var stream = file.OpenRead(); // stream이 끝나면 자동 닫기
+
+			//    var data = JsonSerializer.Deserialize<QuestData>(stream);
+
+			//    if (data is not null) { quests[name] = data; }
+			//    else { Console.WriteLine($"역직렬화 실패: {file.Name}"); }
+			//}
+
+			// 스킬 불러오기
+			foreach (var info in new DirectoryInfo("./Resources/skills/").GetFiles())
 			{
-				var name = Path.GetFileNameWithoutExtension(file.Name); // 확장자 제거
+				try
+				{
+					if (info.Name.Contains(".json"))
+					{
+						var name = info.Name.Replace(".json", "");
+						var stream = info.OpenRead();
+						var data = JsonSerializer.Deserialize<Skill>(stream);
 
-				if (!file.Exists)
-					continue;
+						skills[name] = data;
 
-				using var stream = file.OpenRead(); // stream이 끝나면 자동 닫기
+						stream.Close();
+					}
+				}
 
-				var data = JsonSerializer.Deserialize<QuestData>(stream);
+				catch (JsonException) { }
 
-				if (data is not null) { quests[name] = data; }
-				else { Console.WriteLine($"역직렬화 실패: {file.Name}"); }
 			}
+
+
 
 			Loaded = true;
 		}
