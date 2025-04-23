@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Starfall.Core.Quest
 {
 	public class QuestData
@@ -12,39 +6,36 @@ namespace Starfall.Core.Quest
 		{
 			NotAccepted,
 			InProgress,
-			Completed
+			Completed,
+			GotReward
 		}
 
-		public QuestData() { }
+		public string Title { get; private set; }
+		public string Comment { get; private set; }
+		public string GoalRaw { get; private set; }
+		public QuestGoal Goal { get; private set; }
+		public RewardData RewardData { get; private set; }
+		public QuestState State { get; set; } = QuestState.NotAccepted;
 
-		string title = string.Empty;
-		string comment = string.Empty;
-		RewardData rewardData = null;
-		string goal = string.Empty;
-		QuestState state = QuestState.NotAccepted;
+		public QuestData(string title, string comment, string goalRaw, string rewardRaw)
+		{
+			Title = title;
+			Comment = comment;
+			GoalRaw = goalRaw;
+			Goal = new QuestGoal(goalRaw);
+			RewardData = new RewardData(rewardRaw);
+		}
 
-		#region Property
-		public string Title
+		public static QuestData FromJson(QuestJson json)
 		{
-			get { return title; }
+			var data = new QuestData(json.Title, json.Comment, json.Goal, json.Reward);
+
+			if (Enum.TryParse(json.State, out QuestState parsedState))
+			{
+				data.State = parsedState;
+			}
+
+			return data;
 		}
-		public string Comment
-		{
-			get { return comment; }
-		}
-		public RewardData RewardData
-		{
-			get { return rewardData; }
-		}
-		public string Goal
-		{
-			get { return goal; }
-		}
-		public QuestState State
-		{
-			get { return state; }
-		}
-		#endregion
 	}
-
 }

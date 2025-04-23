@@ -1,6 +1,6 @@
 {
 	"Name": "알파 스트라이크",
-	"ManaCost": 10,
+	"ManaCost": 20,
 	"SkillType": {
 		"skillEffectType": 1,
 		"effectValue": 2,

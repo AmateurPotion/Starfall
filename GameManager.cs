@@ -65,27 +65,40 @@ namespace Starfall
 				catch (JsonException) { }
 			}
 
-			// 추가 by. 최영임
-			// Quest Json 파일 불러오기
-			//// json파일 필터 *json
-			//foreach (var file in new DirectoryInfo("./Resources/quests/").GetFiles("*.json"))
-			//{
-			//    var name = Path.GetFileNameWithoutExtension(file.Name); // 확장자 제거
-
-			//    if (!file.Exists)
-			//        continue;
-
-			//    using var stream = file.OpenRead(); // stream이 끝나면 자동 닫기
-
-			//    var data = JsonSerializer.Deserialize<QuestData>(stream);
-
-			//    if (data is not null) { quests[name] = data; }
-			//    else { Console.WriteLine($"역직렬화 실패: {file.Name}"); }
-			//}
 
 			// 스킬 불러오기
 			ContentLoader.Load();
-			Loaded = true;
+
+			// 퀘스트 불러오기 by. 최영임
+			foreach (var file in new DirectoryInfo("./Resources/quests/").GetFiles("*.json"))
+			{
+				var name = Path.GetFileNameWithoutExtension(file.Name);
+
+				try
+				{
+					using var stream = file.OpenRead();
+
+					// QuestJson을 먼저 역직렬화
+					var raw = JsonSerializer.Deserialize<QuestJson>(stream);
+
+					// QuestData로 변환
+					if (raw is not null)
+					{
+						var data = QuestData.FromJson(raw);
+						quests[name] = data;
+					}
+					else
+					{
+						Console.WriteLine($"역직렬화 실패: {file.Name}");
+					}
+				}
+				catch (Exception ex)
+				{
+					Console.WriteLine($"json 파일 로드 실패 ({file.Name}): {ex.Message}");
+				}
+			}
+
+				Loaded = true;
 		}
 
 		public static Game StartGame(GameData data)

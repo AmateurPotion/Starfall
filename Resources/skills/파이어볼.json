@@ -1,0 +1,9 @@
+{
+	"Name": "파이어볼",
+	"ManaCost": 30,
+	"SkillType": {
+		"skillEffectType": 1,
+		"effectValue": 5,
+		"target": 1
+	}
+}

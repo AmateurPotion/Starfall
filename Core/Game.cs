@@ -1,3 +1,4 @@
+using System.ComponentModel.Design;
 using System.Text;
 using Spectre.Console;
 using Starfall.Contents.Binary;
@@ -11,7 +12,7 @@ namespace Starfall.Core;
 public class Game(GameData data)
 {
 	public Player player = data;
-	public Shop shop = new("수련자갑옷", "무쇠갑옷", "스파르타의갑옷", "낡은검", "청동도끼", "스파르타의창");
+	public Shop shop = new("수련자갑옷", "무쇠갑옷", "스파르타의갑옷", "낡은검", "청동도끼", "스파르타의창", "마력의장신구", "체력의장신구", "체력포션", "마력포션");
 	private Func<bool> act = () => false;
 	private static Random random = new();
 
@@ -44,10 +45,9 @@ public class Game(GameData data)
 			// 퀘스트 보기
 			2 => () =>
 			{
-				QuestManager.EnterQuestMenu();
+				QuestManager.EnterQuestMenu(player);
 				return true;
-			}
-			,
+			},
 			// 상점
 			3 => () => OpenShop(shop),
 			// 던전입장
@@ -61,8 +61,7 @@ public class Game(GameData data)
 			{
 				GameManager.EnterMain();
 				return true;
-			}
-			,
+			},
 			_ => act
 		};
 
@@ -122,7 +121,7 @@ public class Game(GameData data)
 			AnsiConsole.MarkupLine(option.ToString());
 		}
 
-		switch (MenuUtil.OpenMenu("\n장착 관리", "나가기"))
+		switch (MenuUtil.OpenMenu("\n장착 관리 ", "나가기"))
 		{
 			case 0:
 				// Edit equip
@@ -174,19 +173,51 @@ public class Game(GameData data)
 		{
 			case var i when i > -1 && i < index:
 				var item = items[i];
-				if ((player.inventory[item] = -player.inventory[item]) == 1)
+
+				if (item.Type == ItemType.Consumable)
 				{
-					var type = item.Type;
-					foreach (var (target, equip) in player.inventory)
+					bool isHpPotion = item.Hp > 0;
+					float recoveryAmount = isHpPotion ? item.Hp : item.Mp;
+					bool isFull = isHpPotion ? player.hp >= 100 : player.mp >= 50;
+
+					if (isFull)
 					{
-						if (equip == 1 && target != item
-						&& target.Type == type)
+						AnsiConsole.MarkupLine($"\n{(isHpPotion ? "체력이" : "마나가")} 이미 최대치입니다. {item.Name}을 사용할 수 없습니다.");
+
+						Thread.Sleep(1500);
+
+						return false;
+					}
+
+					if (isHpPotion)
+					{
+						player.hp = Math.Min(player.hp + recoveryAmount, 100);
+					}
+					else
+					{
+						player.mp = Math.Min(player.mp + recoveryAmount, 50);
+					}
+
+					AnsiConsole.MarkupLine($"\n {item.Name}을 사용하여 {(isHpPotion ? "Hp" : "Mp")}를 {recoveryAmount}만큼 회복했습니다.\n");
+
+					player.inventory.Remove(item);
+					MenuUtil.OpenMenu("확인");
+				}
+				else { 
+					if ((player.inventory[item] = -player.inventory[item]) == 1)
+					{
+						var type = item.Type;
+						foreach (var (target, equip) in player.inventory)
 						{
-							player.inventory[target] = -1;
+							if (equip == 1 && target != item
+							&& target.Type == type)
+							{
+								player.inventory[target] = -1;
+							}
 						}
 					}
-				}
-				act = EditInventory;
+					}
+					act = EditInventory;
 				return false;
 
 			default:

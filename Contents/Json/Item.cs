@@ -7,7 +7,8 @@ public static class ItemTypeUtill
     ItemType.Weapon => "무기",
     ItemType.Armor => "방어구",
     ItemType.Accessory => "장신구",
-    ItemType.Etc => "기타",
+		ItemType.Consumable => "소모품",
+		ItemType.Etc => "기타",
     _ => "None"
   };
 }
