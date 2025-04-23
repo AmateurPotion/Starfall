@@ -4,17 +4,19 @@ using static Starfall.Core.CreatePlayer;
 
 namespace Starfall.PlayerService
 {
-  public class Player
+  public partial class Player
   {
     public string name = "Chad";
-    public int level = 1;
+
     public JobName job = JobName.None;
     public float atk = 10;
     public float TrueAtk => atk + GetAddtionalAtk() + (level - 1) * 0.5f;
     public float def = 5;
     public float TrueDef => def + GetAddtionalDef() + (level - 1);
     public float hp = 100;
+    public float mp = 50;
     public float TrueHp => hp + GetAddtionalHp();
+    public float TrueMp => mp + GetAddtionalMp();
     public int gold = 1500;
 
     public Dictionary<Item, int> inventory = [];
@@ -49,18 +51,29 @@ namespace Starfall.PlayerService
       return addtional;
     }
 
-    public static implicit operator Player(GameData data)
-      => new()
+    public float GetAddtionalMp()
+    {
+      var addtional = 0f;
+      foreach (var (item, equip) in inventory)
       {
-        name = data.Name,
-        level = data.Level,
-        job = data.Job,
-        atk = data.Atk,
-        def = data.Def,
-        hp = data.Hp,
-        gold = data.Gold,
-        inventory = data.Inventory.ToDictionary(v => GameManager.items[v.Name], v => v.Equip)
-      };
+        if (item.Type != ItemType.Consumable && equip == 1) addtional += item.Mp;
+      }
+      return addtional;
+    }
+
+    public static implicit operator Player(GameData data)
+  => new()
+  {
+    name = data.Name,
+    level = data.Level,
+    job = data.Job,
+    atk = data.Atk,
+    def = data.Def,
+    hp = data.Hp,
+    mp = data.Mp,
+    gold = data.Gold,
+    inventory = data.Inventory.ToDictionary(v => GameManager.items[v.Name], v => v.Equip)
+  };
 
     public static implicit operator GameData(Player player)
       => new()
@@ -71,6 +84,7 @@ namespace Starfall.PlayerService
         Atk = player.atk,
         Def = player.def,
         Hp = player.hp,
+        Mp = player.mp,
         Gold = player.gold,
         Inventory = [.. from pair in player.inventory select new GameDataItem()
         {

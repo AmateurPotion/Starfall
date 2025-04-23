@@ -24,9 +24,9 @@ public enum StageType
   Boss = 5
 }
 
+
 public class StageNode()
 {
   public StageType type;
   // 위쪽, 그대로, 아래쪽 노드로 이동 가능한지
-  public bool top, middle, bottom;
 }

@@ -18,6 +18,8 @@ public struct GameData
   public float Def { get; set; } = 5;
   [Key(nameof(Hp))]
   public float Hp { get; set; } = 100;
+  [Key(nameof(Mp))]
+  public float Mp { get; set; } = 50;
   [Key(nameof(Gold))]
   public int Gold { get; set; } = 1500;
   [Key(nameof(Inventory))]

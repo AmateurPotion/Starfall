@@ -1,0 +1,9 @@
+{
+	"Name": "자가 회복",
+	"ManaCost": 20,
+	"SkillType": {
+		"skillEffectType": 4,
+		"effectValue": 2,
+		"target": 0
+	}
+}
