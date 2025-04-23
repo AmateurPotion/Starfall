@@ -18,6 +18,7 @@ namespace Starfall
 		public static readonly Dictionary<string, MonsterData> monsters = [];
 		public static readonly Dictionary<string, QuestData> quests = [];
 		public static readonly Dictionary<string, Skill> skills = [];
+		public static Game? Instance { get; private set; }
 
 
 		public static void Init()
@@ -98,15 +99,15 @@ namespace Starfall
 				}
 			}
 
-				Loaded = true;
+			Loaded = true;
 		}
 
 		public static Game StartGame(GameData data)
 		{
-			var game = new Game(data);
-			game.Start();
+			Instance = new Game(data);
+			Instance.Start();
 
-			return game;
+			return Instance;
 		}
 
 		public static void JoinGame()

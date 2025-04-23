@@ -1,6 +1,7 @@
 using System.ComponentModel.Design;
 using System.Text;
 using Spectre.Console;
+using Starfall.Contents;
 using Starfall.Contents.Binary;
 using Starfall.Contents.Json;
 using Starfall.Core.Quest;
@@ -47,7 +48,8 @@ public class Game(GameData data)
 			{
 				QuestManager.EnterQuestMenu(player);
 				return true;
-			},
+			}
+			,
 			// 상점
 			3 => () => OpenShop(shop),
 			// 던전입장
@@ -61,7 +63,8 @@ public class Game(GameData data)
 			{
 				GameManager.EnterMain();
 				return true;
-			},
+			}
+			,
 			_ => act
 		};
 
@@ -203,7 +206,8 @@ public class Game(GameData data)
 					player.inventory.Remove(item);
 					MenuUtil.OpenMenu("확인");
 				}
-				else { 
+				else
+				{
 					if ((player.inventory[item] = -player.inventory[item]) == 1)
 					{
 						var type = item.Type;
@@ -216,8 +220,8 @@ public class Game(GameData data)
 							}
 						}
 					}
-					}
-					act = EditInventory;
+				}
+				act = EditInventory;
 				return false;
 
 			default:
@@ -336,31 +340,32 @@ public class Game(GameData data)
 		];
 	public bool JoinDungeon()
 	{
-		Console.Clear();
-		AnsiConsole.MarkupLine("""
-      던전입장
-      이곳에서 던전으로 들어가기전 활동을 할 수 있습니다.
-      
-      """);
+		new Floor().Render();
+		// Console.Clear();
+		// AnsiConsole.MarkupLine("""
+		//   던전입장
+		//   이곳에서 던전으로 들어가기전 활동을 할 수 있습니다.
 
-		var menu = new List<string>();
-		var index = 0;
-		foreach (var (label, def, _, _) in dungeons)
-		{
-			menu.Add($"{++index}. {label} | 방어력 {Math.Round(def)} 이상 권장");
-		}
+		//   """);
 
-		var select = MenuUtil.OpenMenu([.. menu, "0. 나가기"]);
-		if (select > -1 && select < index)
-		{
-			Console.Clear();
-			var (label, def, fail, dReward) = dungeons[select];
+		// var menu = new List<string>();
+		// var index = 0;
+		// foreach (var (label, def, _, _) in dungeons)
+		// {
+		// 	menu.Add($"{++index}. {label} | 방어력 {Math.Round(def)} 이상 권장");
+		// }
 
-            var battle = new Battle();
-            battle.StartBattle(player, GameManager.monsters);
-        }
+		// var select = MenuUtil.OpenMenu([.. menu, "0. 나가기"]);
+		// if (select > -1 && select < index)
+		// {
+		// 	Console.Clear();
+		// 	var (label, def, fail, dReward) = dungeons[select];
 
-		// 던전이 끝났을시 허브로
+		//         var battle = new Battle();
+		//         battle.StartBattle(player, GameManager.monsters);
+		//     }
+
+		// // 던전이 끝났을시 허브로
 		act = OpenHub;
 		return false;
 	}
