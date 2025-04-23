@@ -1,6 +1,8 @@
 {
-    "Name": "대포미니언",
-    "Level":5 ,
-    "Hp": 25,
-    "Atk": 8
+	"Name": "대포미니언",
+	"Level": 5,
+	"Hp": 25,
+	"Atk": 8,
+	"Def": 0,
+	"RewardGold": 100
 }
