@@ -1,28 +1,12 @@
-using System.Runtime.CompilerServices;
 using Spectre.Console;
+using Starfall.Contents;
 using Starfall.Contents.Json;
 using Starfall.IO.CUI;
 using Starfall.PlayerService;
 
 namespace Starfall.Core
 {
-    class Monster(MonsterData data)
-	{
-		public string name { get; private set; } = data.Name;
-		public float hp { get; set; } = data.Hp;
-		public float atk { get; private set; } = data.Atk;
-		public float def { get; private set; } = data.Def;
-		public int level { get; private set; } = data.Level;
-		public int rewardGold { get; private set; } = data.RewardGold;
-
-		public bool IsAlive => hp > 0;
-        public void Dead()
-        {
-            AnsiConsole.MarkupLine($"{name}을(를) 처치했습니다!");
-        }
-    }
-
-    public class Battle()
+    public class Battle
     {
         private Player player = new();
         private List<Monster> monsters = [];
@@ -57,8 +41,8 @@ namespace Starfall.Core
                 for (int i = 0; i < monsters.Count; i++)
                 {
                     var m = monsters[i];
-                    var hpText = m.IsAlive ? $"HP {m.hp}" : "Dead";
-                    AnsiConsole.MarkupLine($"{i + 1} Lv.{m.level} {m.name}  {hpText}");
+                    var hpText = m.IsAlive ? $"HP {m.Hp}" : "Dead";
+                    AnsiConsole.MarkupLine($"{i + 1} Lv.{m.Level} {m.Name}  {hpText}");
                 }
 
                 AnsiConsole.MarkupLine($"\n[[내 정보]]\nLv.{player.level} {player.name} {player.job.GetJobNameToKor()}\nHP {player.presentHp}/{player.TrueHp}\n");
@@ -136,7 +120,7 @@ namespace Starfall.Core
 
         private bool NormalAttack()
         {
-            var options = monsters.Select(m => $"- {m.name} 공격").ToList();
+            var options = monsters.Select(m => $"- {m.Name} 공격").ToList();
             options.Add("- 취소");
 
             var choice = MenuUtil.OpenMenu([.. options]);
@@ -148,7 +132,7 @@ namespace Starfall.Core
             var target = monsters[choice];
             if (!target.IsAlive)
             {
-                AnsiConsole.MarkupLine($"이미 쓰러진 {target.name}은 공격할 수 없습니다.\n");
+                AnsiConsole.MarkupLine($"이미 쓰러진 {target.Name}은 공격할 수 없습니다.\n");
                 MenuUtil.OpenMenu("다음");
                 return false;
             }
@@ -157,7 +141,7 @@ namespace Starfall.Core
             bool isEvasion = 100 * random.NextDouble() < monEvasion;
             if (isEvasion)
             {
-                AnsiConsole.MarkupLine($"{target.name}이 공격을 회피했습니다!");
+                AnsiConsole.MarkupLine($"{target.Name}이 공격을 회피했습니다!");
             }
             else
             {
@@ -169,7 +153,7 @@ namespace Starfall.Core
 
         private bool SkillAttack(double multiplier)
         {
-            var options = monsters.Select(m => $"- {m.name} 공격").ToList();
+            var options = monsters.Select(m => $"- {m.Name} 공격").ToList();
             options.Add("- 취소");
 
             var choice = MenuUtil.OpenMenu([.. options]);
@@ -181,7 +165,7 @@ namespace Starfall.Core
             var target = monsters[choice];
             if (!target.IsAlive)
             {
-                AnsiConsole.MarkupLine($"이미 쓰러진 {target.name}은 공격할 수 없습니다.\n");
+                AnsiConsole.MarkupLine($"이미 쓰러진 {target.Name}은 공격할 수 없습니다.\n");
                 MenuUtil.OpenMenu("다음");
                 return false;
             }
@@ -208,13 +192,13 @@ namespace Starfall.Core
 
             playerDamage = Math.Ceiling(playerDamage); // 0의 자리에서 올림
 
-            AnsiConsole.MarkupLine($"{player.name}(이)가 {monster.name}에게 {playerDamage}의 데미지를 입혔습니다!!");
-            monster.hp -= (float)playerDamage;
+            AnsiConsole.MarkupLine($"{player.name}(이)가 {monster.Name}에게 {playerDamage}의 데미지를 입혔습니다!!");
+            monster.Hp -= (float)playerDamage;
             if (!monster.IsAlive)
             {
                 monster.Dead();
-                resultExp += monster.level;
-                resultGold += monster.rewardGold;
+                resultExp += monster.Level;
+                resultGold += monster.RewardGold;
             }
         }
 
@@ -227,18 +211,18 @@ namespace Starfall.Core
             if (isEvasion)
             {
                 AnsiConsole.MarkupLine($"{player.name}(이)가 공격을 회피했습니다!");
-                AnsiConsole.MarkupLine($"{monster.name}에게 {monDamage}의 데미지를 받았습니다!\n");
+                AnsiConsole.MarkupLine($"{monster.Name}에게 {monDamage}의 데미지를 받았습니다!\n");
             }
             else
             {
                 // 플레이어의 방어 여부 계산
                 if (player.TrueDef >= 1000)
                 {
-                    AnsiConsole.MarkupLine($"{monster.name}에게 {monDamage}의 데미지를 받았지만 완벽한 방어로 0의 피해를 받았습니다!\n");
+                    AnsiConsole.MarkupLine($"{monster.Name}에게 {monDamage}의 데미지를 받았지만 완벽한 방어로 0의 피해를 받았습니다!\n");
                 }
                 else
                 {
-                    monDamage = monster.atk;
+                    monDamage = monster.Atk;
 
                     // 치명타 여부 계산
                     bool isCrit = 100 * random.NextDouble() < monCrit;
@@ -251,7 +235,7 @@ namespace Starfall.Core
                     monDamage = Math.Ceiling(monDamage); // 0의 자리에서 올림 처리
                     double reduceDamage = monDamage - player.TrueDef;
                     double realDamage = Math.Max(0, reduceDamage);
-                    AnsiConsole.MarkupLine($"{monster.name}에게 {monDamage}의 데미지를 받았지만 {player.TrueDef}의 피해를 막아서 {realDamage}의 피해를 받았습니다!\n");
+                    AnsiConsole.MarkupLine($"{monster.Name}에게 {monDamage}의 데미지를 받았지만 {player.TrueDef}의 피해를 막아서 {realDamage}의 피해를 받았습니다!\n");
                     player.presentHp -= (float)monDamage;
                 }
             }
