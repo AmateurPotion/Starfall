@@ -45,10 +45,9 @@ public class Game(GameData data)
 			// 퀘스트 보기
 			2 => () =>
 			{
-				QuestManager.EnterQuestMenu();
+				QuestManager.EnterQuestMenu(player);
 				return true;
-			}
-			,
+			},
 			// 상점
 			3 => () => OpenShop(shop),
 			// 던전입장
@@ -62,8 +61,7 @@ public class Game(GameData data)
 			{
 				GameManager.EnterMain();
 				return true;
-			}
-			,
+			},
 			_ => act
 		};
 

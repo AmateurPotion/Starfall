@@ -21,6 +21,15 @@ namespace Starfall.PlayerService
 
     public Dictionary<Item, int> inventory = [];
 
+		public float GetStatAsString(string stat) => stat switch
+		{
+			"Atk" => TrueAtk,
+			"Def" => TrueDef,
+			"Hp" => TrueHp,
+			"Mp" => TrueMp,
+			_ => 0
+		};
+
     public float GetAddtionalAtk()
     {
       var addtional = 0f;
