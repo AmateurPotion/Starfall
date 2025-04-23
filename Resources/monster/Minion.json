@@ -1,6 +1,8 @@
 {
-  "Name": "미니언",
-  "Level": 2,
-  "Hp": 15,
-  "Atk": 5
+	"Name": "미니언",
+	"Level": 2,
+	"Hp": 15,
+	"Atk": 5,
+	"Def": 0,
+	"RewardGold": 100
 }
