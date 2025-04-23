@@ -19,15 +19,21 @@ namespace Starfall.Contents
             Heal = 4,
         }
 
-        public string Name { get; set; }
-        public int ManaCost { get; set; }
+				public string Name { get; set; }
+				public int ManaCost { get; set; }
 
-        public Dictionary<SkillEffectType, int> Effect { get; set; }
+				public SkillType SkillType { get; set; }
 
-    }   
+	}
+
+	public struct SkillType() {
+		public Skill.SkillEffectType skillEffectType { get; set; }
+		public float effectValue { get; set; }
+		public TargetType target { get; set; }
+	}
 
 
-    public static class SkillEffectType
+	public static class SkillEffectType
     {
         public static string GetSkillEffectTypeToKor(this Skill.SkillEffectType skillType) => skillType switch
         {
@@ -37,6 +43,13 @@ namespace Starfall.Contents
             Skill.SkillEffectType.Defense => "쉴드",
             Skill.SkillEffectType.Heal => "회복",
             _ => "",
-        };
-    }
-  }
+     };
+	}
+
+	public enum TargetType
+	{
+		Self = 0,
+		SingleEnemy = 1,
+		MultiEnemy = 2
+	}
+}

@@ -1,0 +1,9 @@
+{
+	"Name": "단단해지기",
+	"ManaCost": 10,
+	"SkillType": {
+		"skillEffectType": 3,
+		"effectValue": 3,
+		"target": 0
+	}
+}
