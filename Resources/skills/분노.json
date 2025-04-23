@@ -1,8 +1,8 @@
 {
-	"Name": "자가 회복",
+	"Name": "분노",
 	"ManaCost": 20,
 	"SkillType": {
-		"skillEffectType": 4,
+		"skillEffectType": 3,
 		"effectValue": 2,
 		"target": 0
 	}
