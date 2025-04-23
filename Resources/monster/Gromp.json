@@ -1,0 +1,13 @@
+using System; using System.Collections.Generic; using System.Linq; using System.Text; using System.Threading.Tasks; namespace Starfall.Resources.monster {
+	internal class
+	Gromp {
+		"Name": "심술두꺼비",
+		"Level": 10,
+		"Hp": 120,
+		"Atk": 4,
+		"Def": 24,
+		"RewardGold": 1200
+	}
+
+
+}
