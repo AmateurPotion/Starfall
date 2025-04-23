@@ -1,0 +1,9 @@
+{
+	"Name": "베타 스트라이크",
+	"ManaCost": 25,
+	"SkillType": {
+		"skillEffectType": 1,
+		"effectValue": 3,
+		"target": 1
+	}
+}

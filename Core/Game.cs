@@ -1,3 +1,4 @@
+using System.ComponentModel.Design;
 using System.Text;
 using Spectre.Console;
 using Starfall.Contents.Binary;
@@ -11,7 +12,7 @@ namespace Starfall.Core;
 public class Game(GameData data)
 {
 	public Player player = data;
-	public Shop shop = new("수련자갑옷", "무쇠갑옷", "스파르타의갑옷", "낡은검", "청동도끼", "스파르타의창");
+	public Shop shop = new("수련자갑옷", "무쇠갑옷", "스파르타의갑옷", "낡은검", "청동도끼", "스파르타의창", "마력의장신구", "체력의장신구", "체력포션", "마력포션");
 	private Func<bool> act = () => false;
 	private static Random random = new();
 
@@ -120,7 +121,7 @@ public class Game(GameData data)
 			AnsiConsole.MarkupLine(option.ToString());
 		}
 
-		switch (MenuUtil.OpenMenu("\n장착 관리", "나가기"))
+		switch (MenuUtil.OpenMenu("\n장착 관리 ", "나가기"))
 		{
 			case 0:
 				// Edit equip
@@ -172,19 +173,51 @@ public class Game(GameData data)
 		{
 			case var i when i > -1 && i < index:
 				var item = items[i];
-				if ((player.inventory[item] = -player.inventory[item]) == 1)
+
+				if (item.Type == ItemType.Consumable)
 				{
-					var type = item.Type;
-					foreach (var (target, equip) in player.inventory)
+					bool isHpPotion = item.Hp > 0;
+					float recoveryAmount = isHpPotion ? item.Hp : item.Mp;
+					bool isFull = isHpPotion ? player.hp >= 100 : player.mp >= 50;
+
+					if (isFull)
 					{
-						if (equip == 1 && target != item
-						&& target.Type == type)
+						AnsiConsole.MarkupLine($"\n{(isHpPotion ? "체력이" : "마나가")} 이미 최대치입니다. {item.Name}을 사용할 수 없습니다.");
+
+						Thread.Sleep(1500);
+
+						return false;
+					}
+
+					if (isHpPotion)
+					{
+						player.hp = Math.Min(player.hp + recoveryAmount, 100);
+					}
+					else
+					{
+						player.mp = Math.Min(player.mp + recoveryAmount, 50);
+					}
+
+					AnsiConsole.MarkupLine($"\n {item.Name}을 사용하여 {(isHpPotion ? "Hp" : "Mp")}를 {recoveryAmount}만큼 회복했습니다.\n");
+
+					player.inventory.Remove(item);
+					MenuUtil.OpenMenu("확인");
+				}
+				else { 
+					if ((player.inventory[item] = -player.inventory[item]) == 1)
+					{
+						var type = item.Type;
+						foreach (var (target, equip) in player.inventory)
 						{
-							player.inventory[target] = -1;
+							if (equip == 1 && target != item
+							&& target.Type == type)
+							{
+								player.inventory[target] = -1;
+							}
 						}
 					}
-				}
-				act = EditInventory;
+					}
+					act = EditInventory;
 				return false;
 
 			default:
@@ -323,46 +356,9 @@ public class Game(GameData data)
 			Console.Clear();
 			var (label, def, fail, dReward) = dungeons[select];
 
-			var battle = new Battle();
-			battle.StartBattle(player);
-
-			if (player.TrueDef < def && random.Next(0, 100) < fail)
-			{
-				// 실패시
-				var damage = (int)Math.Round(player.TrueHp / 2);
-				AnsiConsole.MarkupLine($"""
-          던전 실패
-          {label}을 실패하였습니다.
-
-          [[탐험 결과]]
-          체력 {player.TrueHp} -> {player.TrueHp - damage}
-
-          """);
-
-				player.hp -= damage;
-				MenuUtil.OpenMenu("0. 나가기");
-			}
-			else
-			{
-				// 성공시
-				int damage = random.Next(20, 35) - (int)Math.Round(player.TrueDef - def),
-				 reward = (int)Math.Round(dReward * (100f + player.atk * 2f) / 100f);
-				AnsiConsole.MarkupLine($"""
-          던전 클리어
-          축하합니다!!
-          {label}을 클리어 하였습니다.
-
-          [[탐험 결과]]
-          체력 {player.TrueHp} -> {player.TrueHp - damage}
-          Gold {player.gold} G -> {player.gold + reward} G
-
-          """);
-
-				player.hp -= damage;
-				player.gold += reward;
-				MenuUtil.OpenMenu("0. 나가기");
-			}
-		}
+            var battle = new Battle();
+            battle.StartBattle(player, GameManager.monsters);
+        }
 
 		// 던전이 끝났을시 허브로
 		act = OpenHub;

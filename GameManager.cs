@@ -67,25 +67,7 @@ namespace Starfall
 
 
 			// 스킬 불러오기
-			foreach (var info in new DirectoryInfo("./Resources/skills/").GetFiles())
-			{
-				try
-				{
-					if (info.Name.Contains(".json"))
-					{
-						var name = info.Name.Replace(".json", "");
-						var stream = info.OpenRead();
-						var data = JsonSerializer.Deserialize<Skill>(stream);
-
-						skills[name] = data;
-
-						stream.Close();
-					}
-				}
-
-				catch (JsonException) { }
-
-			}
+			ContentLoader.Load();
 
 			// 퀘스트 불러오기 by. 최영임
 			foreach (var file in new DirectoryInfo("./Resources/quests/").GetFiles("*.json"))
