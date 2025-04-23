@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Starfall.Core.Quest
 {
 	// 보상 설정 할 때 (예를 들어: 던전)
@@ -53,6 +47,11 @@ namespace Starfall.Core.Quest
 				}
 			}
 			return;
+		}
+
+		public Dictionary<RewardType, List<string>> GetAll()
+		{
+			return rewards ?? new Dictionary<RewardType, List<string>>();
 		}
 	}
 }
