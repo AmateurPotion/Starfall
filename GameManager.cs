@@ -3,6 +3,7 @@ using Spectre.Console;
 using Starfall.Contents.Binary;
 using Starfall.Contents.Json;
 using Starfall.Core;
+using Starfall.Core.Quest;
 using Starfall.IO;
 using Starfall.IO.CUI;
 using Starfall.Contents;
