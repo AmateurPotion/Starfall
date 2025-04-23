@@ -54,7 +54,5 @@ namespace Starfall.Core.Quest
 			}
 			return;
 		}
-
-
 	}
 }
