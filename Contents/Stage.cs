@@ -4,12 +4,12 @@ public static class StageTypeUtil
 {
   public static string GetValue(this StageType type) => type switch
   {
-    StageType.None => "Err",
-    StageType.Start => "Start",
-    StageType.Battle => "Battle",
-    StageType.Event => "Event",
-    StageType.Shop => "Shop",
-    StageType.Boss => "Boss",
+    StageType.None => "",
+    StageType.Start => "시작",
+    StageType.Battle => "전투",
+    StageType.Event => "이벤트",
+    StageType.Shop => "상점",
+    StageType.Boss => "보스전",
     _ => "Err"
   };
 }

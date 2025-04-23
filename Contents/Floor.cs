@@ -1,3 +1,7 @@
+using System.Diagnostics;
+using System.Text;
+using Spectre.Console;
+using Spectre.Console.Rendering;
 using Starfall.Utils;
 
 namespace Starfall.Contents;
@@ -41,7 +45,7 @@ public class Floor
     }
 
     // 각 라인마다 2개 노드 삭제하기
-    for (int x = 0; x < length - 2; x++)
+    for (int x = 0; x < length; x++)
     {
       var removeList = (from line in data
                         where line[x + 1].type != StageType.None
@@ -65,10 +69,12 @@ public class Floor
 
     foreach (var n in eventList)
     {
-      (from line in data
-       where line[n].type == StageType.Battle
-       orderby random.Next()
-       select line[n]).GetEnumerator().Current.type = StageType.Event;
+      Console.WriteLine(n);
+      var node = (from line in data
+                  where line[n].type == StageType.Battle
+                  orderby random.Next()
+                  select line[n]).First();
+      node.type = StageType.Event;
     }
 
     var shopList =
@@ -78,10 +84,11 @@ public class Floor
 
     foreach (var n in shopList)
     {
-      (from line in data
-       where line[n].type == StageType.Battle
-       orderby random.Next()
-       select line[n]).GetEnumerator().Current.type = StageType.Shop;
+      var node = (from line in data
+                  where line[n].type == StageType.Battle
+                  orderby random.Next()
+                  select line[n]).First();
+      node.type = StageType.Shop;
     }
     #endregion
   }
@@ -105,20 +112,31 @@ public class Floor
       // 이후 노드에서는 위아래 3개 노드만 선택할 수 있게
       // 그러나 None 타입 노드일시 선택 불가(비어있는 노드)
       var range = 1;
-      (StageNode node, int y)[] choice =
-        [.. from node in data.Select((line, index) => (line, index))
+      int[] choice =
+        [.. (from node in data.Select((line, index) => (line, index))
          where node.index > py - range - 1 &&
            node.index < py + range + 1 &&
            node.line[px + 1].type != StageType.None
-         select (node.line[px + 1], node.index)];
+         select node.index)];
 
       if (choice.Length == 1)
       {
-        result = new(px + 1, choice[0].y);
+        result = new(px + 1, choice[0]);
       }
       else
       {
+        var index = Array.FindIndex(choice, y => y == result.y);
+        if (index == -1)
+        {
+          result = new(px + 1, choice[0]);
+        }
+        else
+        {
+          if (up) index = index == 0 ? choice.Length - 1 : index - 1;
+          else index = index == choice.Length - 1 ? 0 : index + 1;
 
+          result = new(px + 1, choice[index]);
+        }
       }
     }
 
@@ -126,33 +144,66 @@ public class Floor
   }
 
   private Vector2Int beforeFocus = new(0, 0);
+  private List<int> path = [];
+  private int padSize = 8;
 
   public void Render()
   {
     Console.Clear();
+  Render:
     var (sx, sy) = Console.GetCursorPosition();
-    var focus = new Vector2Int();
+    var focus = beforeFocus;
+
+    for (int y = 0; y < Height; y++)
+    {
+      var line = data[y];
+
+      for (int x = 0; x < length; x++)
+      {
+        Console.SetCursorPosition(sx + x * padSize, sy + y * 2);
+        var label = line[x].type.GetValue();
+
+        if (focus.x == x && focus.y == y)
+        {
+          // ㅈ버그 진짜 ㅋㅋ
+          AnsiConsole.Markup($"[black on white]{label}[/]");
+        }
+        else if (x < focus.x)
+        {
+          if (path[x] == y)
+            AnsiConsole.Markup($"[cyan]{label}[/]");
+          else
+            AnsiConsole.Markup($"[gray]{label}[/]");
+        }
+        else
+          AnsiConsole.Markup(label);
+      }
+      Console.WriteLine();
+    }
 
     switch (Console.ReadKey().Key)
     {
       case ConsoleKey.UpArrow:
-        focus = Focus(true);
-        break;
+        beforeFocus = Focus(true);
+        Console.SetCursorPosition(sx, sy);
+        goto Render;
 
       case ConsoleKey.DownArrow:
-        focus = Focus(false);
-        break;
+        beforeFocus = Focus(false);
+        Console.SetCursorPosition(sx, sy);
+        goto Render;
 
       case ConsoleKey.Enter:
-        break;
+        // 스테이지 입장
+        path.Add(focus.y);
+        current = focus;
+        beforeFocus = Focus(true);
+        Console.SetCursorPosition(sx, sy);
+        goto Render;
+
+      default:
+        Console.SetCursorPosition(sx, sy);
+        goto Render;
     }
-
-
-    for (int x = 0; x < length; x++)
-    {
-
-    }
-
-    Render();
   }
 }
