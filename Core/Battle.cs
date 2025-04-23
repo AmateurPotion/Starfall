@@ -13,7 +13,6 @@ namespace Starfall.Core
         private Random random = new();
 
         // 플레이어 관련
-        private bool isDef = false;
         private bool isDead = false;
         private int resultGold = 0;
         private int resultExp = 0;
@@ -47,16 +46,19 @@ namespace Starfall.Core
 
                 AnsiConsole.MarkupLine($"\n[[내 정보]]\nLv.{player.level} {player.name} {player.job.GetJobNameToKor()}\nHP {player.presentHp}/{player.TrueHp}\n");
 
+                // 플레이어가 죽으면 전투 종료
+                if (isDead)
+                {
+                    AnsiConsole.MarkupLine("\n플레이어가 쓰러졌습니다... Game Over.\n");
+                    MenuUtil.OpenMenu("확인");
+                    break;
+                }
+
                 // 모든 몬스터가 죽었으면 전투 종료
                 if (monsters.All(m => !m.IsAlive))
                 {
                     AnsiConsole.MarkupLine("모든 몬스터를 처치했습니다! 전투 종료.\n");
                     MenuUtil.OpenMenu("확인");
-                    break;
-                }
-
-                if (isDead)
-                {
                     break;
                 }
 
@@ -77,16 +79,9 @@ namespace Starfall.Core
 
         private bool PlayerTurn()
         {
-            if (isDef)
-            {
-                isDef = false;
-                player.def -= 1000;
-            }
-            
             var actionChoice = MenuUtil.OpenMenu(
                 "1. 일반 공격",
-                "2. 스킬 공격",
-                "3. 방어하기",
+                "2. 스킬 선택",
                 "0. 턴 종료");
 
             switch (actionChoice)
@@ -94,14 +89,7 @@ namespace Starfall.Core
                 case 0: // 일반 공격
                     return NormalAttack();
                 case 1: // 스킬 공격
-                    return SkillAttack(200);  // 200% 배율
-                case 2: // 방어하기
-                    isDef = true;
-                    AnsiConsole.MarkupLine($"{player.name}(이)가 방어 자세를 취합니다!\n");
-                    player.def += 1000;
-                    MenuUtil.OpenMenu("다음");
-                    return true;
-                case 3: // 턴 종료
+                    return SelectSkill();
                 default:
                     AnsiConsole.MarkupLine("턴을 종료합니다...");
                     return true;
@@ -149,6 +137,11 @@ namespace Starfall.Core
             }        
 
             return true;
+        }
+
+        private bool SelectSkill()
+        {
+            return SkillAttack(200);
         }
 
         private bool SkillAttack(double multiplier)
@@ -240,17 +233,11 @@ namespace Starfall.Core
                 }
             }
 
+            // 플레이어 사망
             if (player.presentHp <= 0)
             {
-                PlayerDead();
+                isDead = true;
             }
-        }
-
-        private void PlayerDead()
-        {
-            isDead = true;
-            AnsiConsole.MarkupLine("\n플레이어가 쓰러졌습니다... Game Over.\n");
-            MenuUtil.OpenMenu("확인");
         }
 
         private void CallResultPage()
