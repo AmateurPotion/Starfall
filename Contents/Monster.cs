@@ -2,7 +2,7 @@ using Spectre.Console;
 using Starfall.Contents.Json;
 namespace Starfall.Contents;
 
-class Monster(MonsterData data)
+public class Monster(MonsterData data)
 {
     public string Name { get; private set; } = data.Name;
     public float Hp { get; set; } = data.Hp;
