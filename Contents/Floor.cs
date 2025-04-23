@@ -7,9 +7,9 @@ public class Floor
   private static readonly Random random = new();
   public readonly int length;
   public List<StageNode>[] data;
-  public Vector2Int current = new();
+  public Vector2Int current = new(-1, -1);
   public int Height => data.Length;
-  public Floor(int length = 5, int height = 3)
+  public Floor(int length = 5, int height = 5)
   {
     this.length = length + 3;
     data = new List<StageNode>[height];
@@ -40,10 +40,18 @@ public class Floor
       }
     }
 
-    // 각 라인마다 1개 노드 삭제하기
-    for (int x = 0; x < length; x++)
+    // 각 라인마다 2개 노드 삭제하기
+    for (int x = 0; x < length - 2; x++)
     {
-      data[random.NextInt64(0, height)][x + 1].type = StageType.None;
+      var removeList = (from line in data
+                        where line[x + 1].type != StageType.None
+                        orderby random.Next()
+                        select line[x + 1]).Take(2);
+
+      foreach (var node in removeList)
+      {
+        node.type = StageType.None;
+      }
     }
 
     //  이벤트 & 상점 스테이지 삽입
@@ -81,15 +89,40 @@ public class Floor
   private Vector2Int Focus(bool up)
   {
     var (px, py) = current;
-    if (px == 0)
+    // 기초값 설정
+    var result = beforeFocus;
+
+    if (px == -1)
     {
+      // 시작 노드일시 자유롭게 노드를 선택할 수 있게
+      result = new(px + 1, up ?
+        result.y != 0 ? result.y - 1 : Height - 1 :
+        result.y != Height - 1 ? result.y + 1 : 0
+      );
     }
     else
     {
+      // 이후 노드에서는 위아래 3개 노드만 선택할 수 있게
+      // 그러나 None 타입 노드일시 선택 불가(비어있는 노드)
+      var range = 1;
+      (StageNode node, int y)[] choice =
+        [.. from node in data.Select((line, index) => (line, index))
+         where node.index > py - range - 1 &&
+           node.index < py + range + 1 &&
+           node.line[px + 1].type != StageType.None
+         select (node.line[px + 1], node.index)];
 
+      if (choice.Length == 1)
+      {
+        result = new(px + 1, choice[0].y);
+      }
+      else
+      {
+
+      }
     }
 
-    return beforeFocus;
+    return result;
   }
 
   private Vector2Int beforeFocus = new(0, 0);
