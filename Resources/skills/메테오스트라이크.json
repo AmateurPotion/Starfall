@@ -1,0 +1,9 @@
+{
+	"Name": "메테오 스트라이크",
+	"ManaCost": 50,
+	"SkillType": {
+		"skillEffectType": 2,
+		"effectValue": 5,
+		"target": 3
+	}
+}
