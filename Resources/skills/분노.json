@@ -1,0 +1,9 @@
+{
+	"Name": "분노",
+	"ManaCost": 20,
+	"SkillType": {
+		"skillEffectType": 3,
+		"effectValue": 2,
+		"target": 0
+	}
+}
