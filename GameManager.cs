@@ -95,6 +95,7 @@ namespace Starfall
 						var data = JsonSerializer.Deserialize<Skill>(stream);
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 						skills[name] = data;
 
 						stream.Close();
@@ -111,6 +112,15 @@ namespace Starfall
 					// QuestJson을 먼저 역직렬화
 					var raw = JsonSerializer.Deserialize<QuestJson>(stream);
 
+=======
+				try
+				{
+					using var stream = file.OpenRead();
+
+					// QuestJson을 먼저 역직렬화
+					var raw = JsonSerializer.Deserialize<QuestJson>(stream);
+
+>>>>>>> Stashed changes
 					// 완전한 QuestData로 변환
 					if (raw is not null)
 					{
@@ -126,6 +136,9 @@ namespace Starfall
 				{
 					Console.WriteLine($"로드 실패 ({file.Name}): {ex.Message}");
 				}
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 			}
 
