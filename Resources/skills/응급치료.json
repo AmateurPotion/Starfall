@@ -1,5 +1,5 @@
 {
-	"Name": "자가 회복",
+	"Name": "응급 치료",
 	"ManaCost": 20,
 	"SkillType": {
 		"skillEffectType": 4,

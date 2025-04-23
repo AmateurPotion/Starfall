@@ -1,0 +1,9 @@
+{
+	"Name": "대량 회복",
+	"ManaCost": 30,
+	"SkillType": {
+		"skillEffectType": 4,
+		"effectValue": 3,
+		"target": 0
+	}
+}
