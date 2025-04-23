@@ -1,8 +1,10 @@
-{
-	"Name": "미니언",
-	"Level": 2,
-	"Hp": 15,
-	"Atk": 5,
-	"Def": 1,
-	"RewardGold": 100
-}
+[
+	{
+		"Name": "미니언",
+		"Level": 2,
+		"Hp": 15,
+		"Atk": 5,
+		"Def": 1,
+		"RewardGold": 100
+	}
+]

@@ -1,8 +1,10 @@
-{
-	"Name": "공허충",
-	"Level": 3,
-	"Hp": 10,
-	"Atk": 9,
-	"Def": 0,
-	"RewardGold": 300
-}
+[
+	{
+		"Name": "공허충",
+		"Level": 3,
+		"Hp": 10,
+		"Atk": 9,
+		"Def": 0,
+		"RewardGold": 300
+	}
+]

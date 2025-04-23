@@ -1,6 +1,5 @@
-using System; using System.Collections.Generic; using System.Linq; using System.Text; using System.Threading.Tasks; namespace Starfall.Resources.monster {
-	internal class
-	suicide {
+[
+	{
 		"Name": "해골 자폭병"
 		"Level": 8,
 		"Hp": 1,
@@ -8,4 +7,4 @@ using System; using System.Collections.Generic; using System.Linq; using System.
 		"Def": 0,
 		"RewardGold": 12
 	}
-}
+]

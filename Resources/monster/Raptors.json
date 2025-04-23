@@ -1,10 +1,11 @@
-using System; using System.Collections.Generic; using System.Linq; using System.Text; using System.Threading.Tasks; namespace Starfall.Resources.monster {
-	internal class
+[
+	{
 
-	"Name": "칼날부리",
-	"Level": 1,
-	"Hp": 5,
-	"Atk": 1
-	"Def": 0,
-	"RewardGold": 20
-} }
+		"Name": "칼날부리",
+		"Level": 1,
+		"Hp": 5,
+		"Atk": 1
+		"Def": 0,
+		"RewardGold": 20
+	}
+]
