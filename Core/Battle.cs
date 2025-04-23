@@ -11,6 +11,7 @@ namespace Starfall.Core
         private Player player = new();
         private List<Monster> monsters = [];
         private Random random = new();
+        private Dictionary<string, Skill> skills = GameManager.skills;
 
         // 플레이어 관련
         private bool isDead = false;
@@ -21,6 +22,8 @@ namespace Starfall.Core
         private float monCrit = 15f;
         private float monCritDmg = 160f;
         private float monEvasion = 10f;
+
+        private Dictionary<string, int> buff = [];
 
         public void StartBattle(Player player, Dictionary<string, MonsterData> monstersD)
         {
@@ -104,6 +107,15 @@ namespace Starfall.Core
 
                 MonsterAttackPlayer(m, player);
             }
+
+            foreach(var (key, value) in buff)
+            {
+                buff[key]--;
+                if (value == 0)
+                {
+                    skills[key].Action("Off", player, monsters);
+                }
+            }
         }
 
         private bool NormalAttack()
@@ -141,31 +153,73 @@ namespace Starfall.Core
 
         private bool SelectSkill()
         {
-            return SkillAttack(200);
-        }
+            var skillKeys = skills.Keys.ToList();
+            var options = skillKeys.Select(k => $"- {k}").ToList();
 
-        private bool SkillAttack(double multiplier)
-        {
-            var options = monsters.Select(m => $"- {m.Name} 공격").ToList();
             options.Add("- 취소");
 
             var choice = MenuUtil.OpenMenu([.. options]);
-            if (choice == monsters.Count || choice == -1)
+            if (choice == skillKeys.Count || choice == -1)
             {
                 return false;
             }
 
-            var target = monsters[choice];
-            if (!target.IsAlive)
+            Skill selectedskill = skills[skillKeys[choice]];
+
+            if (selectedskill.targetAmount == 0)
             {
-                AnsiConsole.MarkupLine($"이미 쓰러진 {target.Name}은 공격할 수 없습니다.\n");
-                MenuUtil.OpenMenu("다음");
-                return false;
+                    selectedskill.Action("Use", player, monsters);
+                    if (selectedskill.durationTurn > 0)
+                    {
+                        buff.Add(selectedskill.name, selectedskill.durationTurn);
+                    }
+                    return true;
             }
+            else
+            {
+                List<Monster> targetMonster = [];
+                if (selectedskill.targetAmount >= monsters.Count)
+                {
+                    foreach (var m in monsters)
+                    {
+                        targetMonster.Add(m);
+                    }
+                    selectedskill.Action("Use", player, targetMonster);
+                    return true;
+                }
+                else
+                {
+                    for (int i = 0; i < selectedskill.targetAmount; i++)
+                    {
+                        SkillAttack(selectedskill, targetMonster);
+                    }
+                    return true;
+                }
+            }
+        }
+        
+        private void SkillAttack(Skill skill, List<Monster> monList)
+        {
+            while(true)
+            {
+                var options = monsters.Select(m => $"- {m.Name} 공격").ToList();
 
-            PlayerAttackMonster(player, target, multiplier);
+                var choice = MenuUtil.OpenMenu([.. options]);
 
-            return true;
+                var target = monsters[choice];
+                if (!target.IsAlive)
+                {
+                    AnsiConsole.MarkupLine($"이미 쓰러진 {target.Name}은 공격할 수 없습니다.\n");
+                    MenuUtil.OpenMenu("다음");
+                    continue;
+                }
+
+                monList.Add(target);
+
+                skill.Action("Use", player, monList);
+
+                break;
+            }
         }
 
         private void PlayerAttackMonster(Player player, Monster monster, double multiplier)
@@ -266,6 +320,6 @@ namespace Starfall.Core
             }
             else
                 MenuUtil.OpenMenu("다음");
-        }
+        }        
     }
 }
