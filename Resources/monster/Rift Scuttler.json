@@ -1,0 +1,12 @@
+using System; using System.Collections.Generic; using System.Linq; using System.Text; using System.Threading.Tasks; namespace Starfall.Resources.monster {
+	internal class
+	Rift_Scuttler {
+		"Name": "던전바위게",
+		"Level": 3,
+		"Hp": 220,
+		"Atk": 1,
+		"Def": 5,
+		"RewardGold": 500
+
+	}
+}

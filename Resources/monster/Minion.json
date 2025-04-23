@@ -3,6 +3,6 @@
 	"Level": 2,
 	"Hp": 15,
 	"Atk": 5,
-	"Def": 0,
+	"Def": 1,
 	"RewardGold": 100
 }
