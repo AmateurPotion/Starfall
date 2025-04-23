@@ -1,14 +1,13 @@
 using Starfall.Contents.Binary;
 using Starfall.Contents.Json;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 using static Starfall.Core.CreatePlayer;
 
 namespace Starfall.PlayerService
 {
-  public class Player
+  public partial class Player
   {
     public string name = "Chad";
-    public int level = 1;
+
     public JobName job = JobName.None;
     public float atk = 10;
     public float TrueAtk => atk + GetAddtionalAtk() + (level - 1) * 0.5f;
@@ -54,27 +53,27 @@ namespace Starfall.PlayerService
 
     public float GetAddtionalMp()
     {
-        var addtional = 0f;
-        foreach (var (item, equip) in inventory)
-        {
-            if (item.Type != ItemType.Consumable && equip == 1) addtional += item.Mp;
-        }
-        return addtional;
+      var addtional = 0f;
+      foreach (var (item, equip) in inventory)
+      {
+        if (item.Type != ItemType.Consumable && equip == 1) addtional += item.Mp;
+      }
+      return addtional;
     }
 
-        public static implicit operator Player(GameData data)
-      => new()
-      {
-        name = data.Name,
-        level = data.Level,
-        job = data.Job,
-        atk = data.Atk,
-        def = data.Def,
-        hp = data.Hp,
-        mp = data.Mp,
-        gold = data.Gold,
-        inventory = data.Inventory.ToDictionary(v => GameManager.items[v.Name], v => v.Equip)
-      };
+    public static implicit operator Player(GameData data)
+  => new()
+  {
+    name = data.Name,
+    level = data.Level,
+    job = data.Job,
+    atk = data.Atk,
+    def = data.Def,
+    hp = data.Hp,
+    mp = data.Mp,
+    gold = data.Gold,
+    inventory = data.Inventory.ToDictionary(v => GameManager.items[v.Name], v => v.Equip)
+  };
 
     public static implicit operator GameData(Player player)
       => new()
