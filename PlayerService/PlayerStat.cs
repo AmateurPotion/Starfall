@@ -3,6 +3,7 @@ namespace Starfall.PlayerService;
 public partial class Player
 {
   public float presentHp = 0;
+  public float presentMp = 0;
   public int level = 1;
   private int exp = 0;
   public int Exp
