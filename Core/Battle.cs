@@ -33,6 +33,7 @@ namespace Starfall.Core
                 this.monsters.Add(new Monster(kv.Value));
             }
             player.presentHp = player.TrueHp;
+            player.presentMp = player.TrueMp;
 
             while (true)
             {
@@ -47,7 +48,13 @@ namespace Starfall.Core
                     AnsiConsole.MarkupLine($"{i + 1} Lv.{m.Level} {m.Name}  {hpText}");
                 }
 
-                AnsiConsole.MarkupLine($"\n[[내 정보]]\nLv.{player.level} {player.name} {player.job.GetJobNameToKor()}\nHP {player.presentHp}/{player.TrueHp}\n");
+                AnsiConsole.MarkupLine($"""
+                [[내 정보]]
+                Lv.{player.level} {player.name} {player.job.GetJobNameToKor()}
+                HP {player.presentHp}/{player.TrueHp}
+                MP {player.presentMp}/{player.TrueMp}
+
+                """);
 
                 // 플레이어가 죽으면 전투 종료
                 if (isDead)
@@ -78,6 +85,7 @@ namespace Starfall.Core
             CallResultPage();
 
             player.hp = player.presentHp;
+            player.mp = player.presentMp;
         }
 
         private bool PlayerTurn()
@@ -166,17 +174,27 @@ namespace Starfall.Core
 
             Skill selectedskill = skills[skillKeys[choice]];
 
-            if (selectedskill.targetAmount == 0)
+            // 마나가 부족하면 취소
+            if (selectedskill.cost > player.presentMp)
             {
+                AnsiConsole.MarkupLine("마나가 부족합니다");
+                MenuUtil.OpenMenu("다음");
+                return false;
+            }
+
+            
+            if (selectedskill.targetAmount == 0)
+            {  // 버프 스킬 체크
                     selectedskill.Action("Use", player, monsters);
                     if (selectedskill.durationTurn > 0)
                     {
                         buff.Add(selectedskill.name, selectedskill.durationTurn);
                     }
+                    player.presentMp -= selectedskill.cost;
                     return true;
             }
             else
-            {
+            {  // 공격 스킬
                 List<Monster> targetMonster = [];
                 if (selectedskill.targetAmount >= monsters.Count)
                 {
@@ -185,6 +203,7 @@ namespace Starfall.Core
                         targetMonster.Add(m);
                     }
                     selectedskill.Action("Use", player, targetMonster);
+                    player.presentMp -= selectedskill.cost;
                     return true;
                 }
                 else
@@ -193,6 +212,7 @@ namespace Starfall.Core
                     {
                         SkillAttack(selectedskill, targetMonster);
                     }
+                    player.presentMp -= selectedskill.cost;
                     return true;
                 }
             }
@@ -307,6 +327,7 @@ namespace Starfall.Core
 
             Lv.{player.level} {player.name} {player.job.GetJobNameToKor()}
             HP {player.TrueHp} -> {player.presentHp}
+            Mp {player.TrueMp} -> {player.presentMp}
 
             획득한 경험치 -> +{resultExp}
             획득한 골  드 -> +{resultGold}
