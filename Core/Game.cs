@@ -6,6 +6,7 @@ using Starfall.Contents;
 using Starfall.Contents.Binary;
 using Starfall.Contents.Json;
 using Starfall.Core.Quest;
+using Starfall.Core;
 using Starfall.IO;
 using Starfall.IO.CUI;
 using Starfall.PlayerService;
@@ -52,7 +53,7 @@ public class Game(GameData data)
 			}
 			,
 			// 상점
-			3 => () => OpenShop(shop),
+			3 => OpenShop,
 			// 던전입장
 			4 => JoinDungeon,
 			// 휴식하기
@@ -121,6 +122,10 @@ public class Game(GameData data)
 			if (item.Mp != 0) stats.Add("정신력 " + (item.Mp > 0 ? "+" + item.Mp : item.Mp));
 			option.Append(string.Join(" / ", stats));
 			option.Append(" | " + item.Description);
+			if (item.Type == ItemType.Consumable && player.inventory.ContainsKey(item))
+			{
+				option.Append($" x{(Math.Abs(player.inventory[item]))}");
+			}
 
 			AnsiConsole.MarkupLine(option.ToString());
 		}
@@ -165,7 +170,10 @@ public class Game(GameData data)
 			if (item.Mp != 0) stats.Add("정신력 " + (item.Mp > 0 ? "+" : "") + item.Mp);
 			option.Append(string.Join(" / ", stats));
 			option.Append(" | " + item.Description);
-
+			if (item.Type == ItemType.Consumable && player.inventory.ContainsKey(item))
+			{
+				option.Append($" x{(Math.Abs(player.inventory[item]))}");
+			}
 			items.Add(item);
 			index++;
 			menu.Add(option.ToString());
@@ -204,8 +212,16 @@ public class Game(GameData data)
 
 					AnsiConsole.MarkupLine($"\n {item.Name}을 사용하여 {(isHpPotion ? "Hp" : "Mp")}를 {recoveryAmount}만큼 회복했습니다.\n");
 
-					player.inventory.Remove(item);
-					MenuUtil.OpenMenu("확인");
+					if (player.inventory[item] == 0)
+					{
+						player.inventory.Remove(item);
+					}
+					else
+					{
+						player.inventory[item] += 1;
+					}
+
+						MenuUtil.OpenMenu("확인");
 				}
 				else
 				{
@@ -232,107 +248,14 @@ public class Game(GameData data)
 		}
 	}
 
-	private static string StatStr(float value) => (value > 0 ? "+" : "-") + Math.Abs(value);
-	public bool OpenShop(Shop shop)
+	public bool OpenShop()
 	{
-		Console.Clear();
-		AnsiConsole.MarkupLine($"""
-      상점
-      아이템을 구매 / 판매할 수 있는 상점입니다.
-      [[보유 골드]]
-      {player.gold} G
-      [[아이템 목록]]
-      """);
-
-		var menu = new List<string>();
-		var index = 0;
-		foreach (var item in shop)
-		{
-			var option = new StringBuilder($"- {++index} ");
-
-			option.Append($"{item.Type.GetName()} / {item.Name} |");
-			var stats = new List<string>();
-			if (item.Atk != 0) stats.Add("공격력 " + StatStr(item.Atk));
-			if (item.Def != 0) stats.Add("방어력 " + StatStr(item.Def));
-			if (item.Hp != 0) stats.Add("생명력 " + StatStr(item.Hp));
-			if (item.Mp != 0) stats.Add("정신력 " + StatStr(item.Mp));
-			option.Append(string.Join(" / ", stats));
-			option.Append($" | {item.Description} | ");
-			option.Append(player.inventory.ContainsKey(item) ? "구매완료" : item.Price + " G");
-			menu.Add(option.ToString());
-		}
-
-		this.savedIndex = MenuUtil.OpenMenu(this.savedIndex, false, [.. menu, "\n0. 나가기"]);
-
-		switch (this.savedIndex)
-		{
-			case var i when i > -1 && i < index:
-				// 아이템 선택
-				act = () => SelectItemOnShop(shop, shop.sellItems[i]);
-				this.savedIndex = 0;
-				break;
-
-			default:
-				// 뒤로가기, 취소시 허브로 가기
-				act = OpenHub;
-				this.savedIndex = 0;
-				return false;
-		}
-
-
+		// 뒤로가기 선택되면 해당 메서드 빠져나옴
+		Shop.EnterShop(shop, player);
+		act = OpenHub;
 		return false;
 	}
 
-	public bool SelectItemOnShop(Shop shop, Item item)
-	{
-		Console.Clear();
-		var equip = "";
-		if (player.inventory.TryGetValue(item, out var e) && e == 1)
-		{
-			equip = "[[E]]";
-		}
-		AnsiConsole.MarkupLine($"""
-      {equip} {item.Type.GetName()} - {item.Name}
-      {item.Description}
-      공격력 {StatStr(item.Atk)}
-      방어력 {StatStr(item.Def)}
-      생명력 {StatStr(item.Hp)}
-      정신력 {StatStr(item.Mp)}
-
-      """);
-		if (player.inventory.ContainsKey(item))
-		{
-			// 아이템이 있을 시 판매
-			var sellPrice = (int)Math.Round(shop.sellRatio * item.Price);
-			if (MenuUtil.OpenMenu($"판매하기 / {sellPrice} G", "뒤로가기") == 0)
-			{
-				player.gold += sellPrice;
-				player.inventory.Remove(item);
-				AnsiConsole.MarkupLine($"\n {sellPrice} G에 {item.Name}을 판매했습니다.\n");
-				MenuUtil.OpenMenu("확인");
-			}
-		}
-		else
-		{
-			// 아이템이 없을 시 구매
-			if (MenuUtil.OpenMenu($"구매하기 / {item.Price} G {(player.gold <= item.Price ? "(골드부족)" : "")}", "뒤로가기") == 0)
-			{
-				if (player.gold >= item.Price)
-				{
-					player.gold -= item.Price;
-					player.inventory.Add(item, -1);
-					AnsiConsole.MarkupLine($"\n구매를 완료했습니다.");
-				}
-				else AnsiConsole.MarkupLine("\nGold 가 부족합니다.");
-
-				MenuUtil.OpenMenu("\n확인");
-			}
-		}
-
-		// 선택했을시 다시 상점으로
-		act = () => OpenShop(shop);
-		return false;
-	}
 	public List<DungeonData> dungeons =
 	[
 		new ("쉬운 던전", 5, 40, 1000),
