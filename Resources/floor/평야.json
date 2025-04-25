@@ -1,0 +1,14 @@
+{
+	"Length": 7,
+	"Height": 3,
+	"MobPool": [
+		"Voidling",
+		"RiftScuttler"
+	],
+	"ItemPool": [
+		"청동도끼",
+		"마력포션",
+		"체력의낡은장신구"
+	],
+	"EventPool": []
+}
