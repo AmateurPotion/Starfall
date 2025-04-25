@@ -5,6 +5,9 @@
 		"Hp": 1,
 		"Atk": 30,
 		"Def": 0,
-		"RewardGold": 12
+		"RewardGold": 12,
+		"CriticalChance": 15.0,
+		"CriticalDamageMultiplyer": 160.0,
+		"EvasionChance": 10.0
 	}
 ]
