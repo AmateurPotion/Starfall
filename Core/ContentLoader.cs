@@ -1,3 +1,4 @@
+using Spectre.Console;
 using Starfall.Contents;
 using Starfall.PlayerService;
 
@@ -29,7 +30,7 @@ public static class ContentLoader
       1,
       new()
       {
-        ["Use"] = (player, list) => list[0].Hp -= 2 * player.TrueAtk,
+        ["Use"] = (player, list) => list[0].hp -= 2 * player.TrueAtk,
       }
     );
 
@@ -60,13 +61,42 @@ public static class ContentLoader
                         select mob).Take(2);
           foreach (var mob in target)
           {
-            mob.Hp -= 1.5f * player.TrueAtk;
+            mob.hp -= 1.5f * player.TrueAtk;
           }
         },
+      }
+    );
+
+    RegisterEvent(
+      "이벤트1",
+      "플레이어는 원주민을 만났습니다. 원주민 중 한 명을 골라주세요.",
+      new()
+      {
+        ["트랄랄레로 트랄랄라"] = (player, list) =>
+        {
+          AnsiConsole.MarkupLine("트랄랄레로 트랄랄라가 플레이어의 체력을회복");
+          player.hp += 100;
+        },
+        ["봄바르딜로 코르코딜로"] = (player, list) =>
+        {
+          AnsiConsole.MarkupLine("봄바르딜로 코르코딜로가 몬스터들을 공격");
+          foreach (var m in list)
+          {
+            m.hp -= 100;
+          }
+        },
+        ["퉁x9 사후르"] = (player, list) =>
+        {
+          AnsiConsole.MarkupLine("퉁x9 사후르가 승리의 함성을 외침");
+          player.atk += 10;
+        }
       }
     );
   }
 
   private static void RegisterSkill(string name, string desc, int cost, int durationTurn, int targetAmount, Dictionary<string, SkillAction> actions)
     => GameManager.skills.Add(name, new(name, desc, cost, durationTurn, targetAmount, actions));
+
+  private static void RegisterEvent(string name, string desc, Dictionary<string, Action<Player, List<Monster>>> actions)
+    => GameManager.events.Add(name, new(name, desc, actions));
 }

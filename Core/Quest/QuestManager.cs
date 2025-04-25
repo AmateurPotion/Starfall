@@ -23,9 +23,11 @@ namespace Starfall.Core.Quest
 		public static void EnterQuestMenu(Player curPlayer)
 		{
 			player = curPlayer;
+
+			EnterQuestMenu();
 		}
 
-		static void EnterQuestMenu()
+		public static void EnterQuestMenu()
 		{
 			// ===========================
 			Console.Clear();
@@ -56,13 +58,16 @@ namespace Starfall.Core.Quest
 			var completed = new Dictionary<string, QuestData>();
 			var merged = new Dictionary<string, QuestData>();
 
+
 			if (inProgressQuests.Count > 0)
 			{
-				completed = inProgressQuests
-					.Where(q => q.Value.State == QuestState.Completed)
-					.ToDictionary(q => q.Key, q => q.Value);
+				// Update All Quest Progress
+				foreach (var quest in inProgressQuests)
+				{
+					UpdateQuestProgress(quest.Key);
+				}
 
-				merged = completed
+				merged = inProgressQuests
 					.Concat(acceptableQuests)
 					.ToDictionary(q => q.Key, q => q.Value);
 			}
@@ -74,23 +79,48 @@ namespace Starfall.Core.Quest
 			// Menu에 넘겨줄 Title배열	
 			// 퀘스트를 완료할 수 있다면 (완료 가능)을 붙임
 			string[] questTitles = merged
-					.Select(q => q.Value.State == QuestState.Completed
-									? $"{q.Value.Title} (완료 가능)"
-									: q.Value.Title)
-					.ToArray();
+				.Select(q =>
+					q.Value.State == QuestState.Completed
+						? $"{q.Value.Title} (완료 가능)"
+					: q.Value.State == QuestState.InProgress
+						? $"{q.Value.Title} (진행중)"
+					: q.Value.Title
+				)
+				.Concat(new[] { "뒤로가기" })
+				.ToArray();
+
 
 			int selection = MenuUtil.OpenMenu(questTitles);
 
-			// 선택한 퀘스트 보여주기
-			string selectedKey = merged.Keys.ElementAt(selection);
-			ShowSelectedQuest(selectedKey, merged[selectedKey]);
+			// 메뉴 씬으로
+			if (selection == questTitles.Length - 1)
+			{
+				if (GameManager.Instance != null)
+					GameManager.Instance.Start();
+				else
+					Console.WriteLine("Game.cs Instance 없음");
+			}
+			else
+			{
+				// 선택한 퀘스트 보여주기
+				string selectedKey = merged.Keys.ElementAt(selection);
+				ShowSelectedQuest(selectedKey, merged[selectedKey]);
+			}
 		}
 
 		static void ShowSelectedQuest(string key, QuestData questData)
 		{
-			string progress = questConditions.TryGetValue(key, out var condition)
-							 ? $" ({condition.CurrentCount}/{questData.Goal.Amount})"
-							 : "";
+			// ===========================
+			Console.Clear();
+			ConsoleUtil.PrintTextFile("Starfall.Resources.intro.txt");
+			Console.WriteLine();
+			// ===========================
+
+			string questGoal = questConditions.TryGetValue(key, out var condition)
+							 ? $"{questData.Goal.GoalToString(condition.CurrentCount)}"
+							 : $"{questData.Goal.GoalToString()}";
+
+			string reward = questData.RewardData.RewardToString();
 
 			AnsiConsole.MarkupLine($"""
 
@@ -98,10 +128,10 @@ namespace Starfall.Core.Quest
 
                 {questData.Comment}
 
-                - {questData.Goal}{progress}
+                - 목표: {questGoal}
 
                 - 보상 -
-                [#d1949e]{questData.RewardData}[/]
+                [#d1949e]{reward}[/]
 
 
                 """);
@@ -131,9 +161,9 @@ namespace Starfall.Core.Quest
 			}
 
 			EnterQuestMenu();
-
 		}
 
+		// 퀘스트 수락
 		public static void AcceptQuest(string key, QuestData data)
 		{
 			inProgressQuests.Add(key, data);
@@ -150,6 +180,8 @@ namespace Starfall.Core.Quest
 
 			data.State = QuestState.InProgress;
 		}
+
+		// 퀘스트 완료
 		public static void CompleteQuest(string key)
 		{
 			if (!GameManager.quests.TryGetValue(key, out var quest)) return;
@@ -164,14 +196,15 @@ namespace Starfall.Core.Quest
 		}
 
 
-		// Kill, StatUp 진행 상태 업데이트
+		// 던전 끝났을 때 불러오기
+		// Kill 진행 상태 업데이트
 		public static void UpdateQuestProgress(string key, int amount)
 		{
 			if (!inProgressQuests.TryGetValue(key, out var quest)) return;
 
 			var goal = quest.Goal;
 
-			if (goal.Type is QuestType.Kill or QuestType.StatUp)
+			if (goal.Type is QuestType.Kill)
 			{
 				if (!questConditions.TryGetValue(key, out var condition)) return;
 
@@ -187,7 +220,8 @@ namespace Starfall.Core.Quest
 			}
 		}
 
-		// Equip, LevelUp 진행 상태 체크
+		// 퀘스트 목록 생성할 때 불러오기
+		// Equip, LevelUp, StatUp 진행 상태 체크
 		public static void UpdateQuestProgress(string key)
 		{
 			if (!inProgressQuests.TryGetValue(key, out var quest)) return;
@@ -196,6 +230,7 @@ namespace Starfall.Core.Quest
 				quest.State = QuestState.Completed;
 		}
 
+		// 목표를 달성했는가?
 		public static bool IsGoalComplete(QuestGoal goal, QuestCondition condition)
 		{
 			return goal.Type switch
@@ -211,11 +246,9 @@ namespace Starfall.Core.Quest
 		private static bool IsItemEquipped(Player player, string itemName)
 		{
 			return GameManager.items.TryGetValue(itemName, out var item)
-					&& player.inventory.TryGetValue(item, out var count)
-					&& count == 1;
+					&& player.inventory.TryGetValue(item, out var equip)
+					&& equip == 1;
 		}
-
-
 
 	}
 }
