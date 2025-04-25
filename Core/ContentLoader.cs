@@ -69,15 +69,19 @@ public static class ContentLoader
     
     RegisterEvent(
       "이벤트1",
-      "이벤트1 입니다\n세 가지 중 하나를 선택하세요.",
-      new() {"선택지1", "선택지2", "선택지3"},
-      () => AnsiConsole.MarkupLine("이벤트 후처리 실행")
+      "세 가지 중 하나를 선택하세요.",
+      new()
+      {
+        ["선택지1"] = () => AnsiConsole.MarkupLine("선택지1 실행됨"),
+        ["선택지2"] = () => AnsiConsole.MarkupLine("선택지2 실행됨"),
+        ["선택지3"] = () => AnsiConsole.MarkupLine("선택지3 실행됨")
+      }
     );
   }
 
   private static void RegisterSkill(string name, string desc, int cost, int durationTurn, int targetAmount, Dictionary<string, SkillAction> actions)
     => GameManager.skills.Add(name, new(name, desc, cost, durationTurn, targetAmount, actions));
 
-  private static void RegisterEvent(string name, string desc, List<string> options, EventTrigger? onFinish = null)
-    => GameManager.events.Add(name, new(name, desc, options, onFinish));
+  private static void RegisterEvent(string name, string desc, Dictionary<string, Action> actions)
+    => GameManager.events.Add(new(name, desc, actions));
 }
