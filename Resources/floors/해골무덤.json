@@ -1,0 +1,7 @@
+{
+	"Length": 9,
+	"Width": 5,
+	"MobPool": ["Suicide", "SiegeMinion"],
+	"ItemPool": ["스파르타의창", "체력의장신구", "마력의장신구"],
+	"EventPool": []
+}

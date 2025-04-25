@@ -4,7 +4,6 @@ using Starfall.Contents;
 using Starfall.Contents.Binary;
 using Starfall.Contents.Json;
 using Starfall.Core.Quest;
-using Starfall.Core;
 using Starfall.IO;
 using Starfall.IO.CUI;
 using Starfall.PlayerService;
@@ -218,7 +217,7 @@ public class Game(GameData data)
 						player.inventory[item] += 1;
 					}
 
-						MenuUtil.OpenMenu("확인");
+					MenuUtil.OpenMenu("확인");
 				}
 				else
 				{
@@ -252,7 +251,7 @@ public class Game(GameData data)
 		act = OpenHub;
 		return false;
 	}
-                           
+
 	public List<Dungeon> dungeons =
 	[
 		new ("쉬운 던전", []){},
