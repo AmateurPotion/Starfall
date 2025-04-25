@@ -5,13 +5,13 @@ namespace Starfall.Contents;
 
 public delegate void EventAction(string option, Action action);
 
-public class Event(string name, string description, Dictionary<string, Action> actions)
+public class Event(string name, string description, Dictionary<string, Action<Player, List<Monster>>> actions)
 {
   // 이벤트 이름
   public string name = name;
   // 이벤트 설명
   public string description = description;
-  public Dictionary<string, Action> actions = actions;
+  public Dictionary<string, Action<Player, List<Monster>>> actions = actions;
 
   public void Action(Player player, List<Monster> list, Action onFinish)
   {
@@ -27,7 +27,7 @@ public class Event(string name, string description, Dictionary<string, Action> a
 
     if (actions.TryGetValue(selected, out var onSelect))
     {
-      onSelect?.Invoke();
+      onSelect?.Invoke(player, list);
     }
 
     onFinish?.Invoke();
