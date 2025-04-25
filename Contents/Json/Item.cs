@@ -7,8 +7,8 @@ public static class ItemTypeUtill
     ItemType.Weapon => "무기",
     ItemType.Armor => "방어구",
     ItemType.Accessory => "장신구",
-		ItemType.Consumable => "소모품",
-		ItemType.Etc => "기타",
+    ItemType.Consumable => "소모품",
+    ItemType.Etc => "기타",
     _ => "None"
   };
 }
@@ -23,6 +23,14 @@ public enum ItemType
   Etc = 5
 }
 
+public enum ItemRarity
+{
+  Common = 1,
+  Special = 2,
+  Eternal = 3,
+  Unique = 4
+}
+
 public struct Item
 {
   public static readonly Dictionary<string, Item> items = [];
@@ -34,6 +42,7 @@ public struct Item
   public float Hp { get; set; } = 0;
   public float Mp { get; set; } = 0;
   public int Price { get; set; } = 0;
+  public ItemRarity rarity { get; set; } = ItemRarity.Common;
 
   public Item()
   { }

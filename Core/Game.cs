@@ -332,7 +332,7 @@ public class Game(GameData data)
 		act = () => OpenShop(shop);
 		return false;
 	}
-	public List<Dungeon> dungeons =
+	public List<DungeonData> dungeons =
 	[
 		new ("쉬운 던전", 5, 40, 1000),
 			new ("일반 던전", 11, 40, 1700),
