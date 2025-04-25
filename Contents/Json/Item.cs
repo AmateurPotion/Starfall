@@ -42,7 +42,7 @@ public struct Item
   public float Hp { get; set; } = 0;
   public float Mp { get; set; } = 0;
   public int Price { get; set; } = 0;
-  public ItemRarity rarity { get; set; } = ItemRarity.Common;
+  public ItemRarity Rarity { get; set; } = ItemRarity.Common;
 
   public Item()
   { }
