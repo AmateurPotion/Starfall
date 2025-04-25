@@ -4,16 +4,19 @@ namespace Starfall.Contents;
 
 public class Monster(MonsterData data)
 {
-    public string Name { get; private set; } = data.Name;
-    public float Hp { get; set; } = data.Hp;
-    public float Atk { get; private set; } = data.Atk;
-    public float Def { get; private set; } = data.Def;
-    public int Level { get; private set; } = data.Level;
-    public int RewardGold { get; private set; } = data.RewardGold;
+    public string name = data.Name;
+    public float hp = data.Hp;
+    public float atk = data.Atk;
+    public float def = data.Def;
+    public int level = data.Level;
+    public int rewardGold = data.RewardGold;
+    public float criticalChance = data.CriticalChance;
+    public float criticalDamageMultiplyer = data.CriticalDamageMultiplyer;
+    public float evasionChance = data.EvasionChance;
 
-    public bool IsAlive => Hp > 0;
+    public bool IsAlive => hp > 0;
     public void Dead()
     {
-        AnsiConsole.MarkupLine($"{Name}을(를) 처치했습니다!");
+        AnsiConsole.MarkupLine($"{name}을(를) 처치했습니다!");
     }
 }

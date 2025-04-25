@@ -1,13 +1,14 @@
 [
 	{
-		"Name": "공허충",
+		"Name": "던전바위게",
 		"Level": 3,
-		"Hp": 10,
-		"Atk": 9,
-		"Def": 0,
-		"RewardGold": 300,
+		"Hp": 220,
+		"Atk": 1,
+		"Def": 5,
+		"RewardGold": 500,
 		"CriticalChance": 15.0,
 		"CriticalDamageMultiplyer": 160.0,
 		"EvasionChance": 10.0
+
 	}
 ]

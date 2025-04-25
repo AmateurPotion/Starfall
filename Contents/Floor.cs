@@ -12,11 +12,11 @@ public class Floor
   public readonly int length;
   public List<StageNode>[] data;
   public Vector2Int current = new(-1, -1);
-  public int Height => data.Length;
-  public Floor(int length = 5, int height = 5)
+  public int Width => data.Length;
+  public Floor(int length = 5, int width = 5)
   {
     this.length = length + 3;
-    data = new List<StageNode>[height];
+    data = new List<StageNode>[width];
 
     #region GenerateFloorMap
     // TODO 가장 위 라인, 가장 아래 노드 라인일 경우 위나 아래로 못 이동하게 구현
@@ -103,8 +103,8 @@ public class Floor
     {
       // 시작 노드일시 자유롭게 노드를 선택할 수 있게
       result = new(px + 1, up ?
-        result.y != 0 ? result.y - 1 : Height - 1 :
-        result.y != Height - 1 ? result.y + 1 : 0
+        result.y != 0 ? result.y - 1 : Width - 1 :
+        result.y != Width - 1 ? result.y + 1 : 0
       );
     }
     else
@@ -154,7 +154,7 @@ public class Floor
     var (sx, sy) = Console.GetCursorPosition();
     var focus = beforeFocus;
 
-    for (int y = 0; y < Height; y++)
+    for (int y = 0; y < Width; y++)
     {
       var line = data[y];
 

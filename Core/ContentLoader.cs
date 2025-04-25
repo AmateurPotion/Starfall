@@ -30,7 +30,7 @@ public static class ContentLoader
       1,
       new()
       {
-        ["Use"] = (player, list) => list[0].Hp -= 2 * player.TrueAtk,
+        ["Use"] = (player, list) => list[0].hp -= 2 * player.TrueAtk,
       }
     );
 
@@ -61,7 +61,7 @@ public static class ContentLoader
                         select mob).Take(2);
           foreach (var mob in target)
           {
-            mob.Hp -= 1.5f * player.TrueAtk;
+            mob.hp -= 1.5f * player.TrueAtk;
           }
         },
       }
