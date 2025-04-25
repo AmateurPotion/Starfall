@@ -1,0 +1,7 @@
+{
+	"Title": "장비를 장착해보자.",
+	"Comment": "그 장비로 되겠어?\n낡은 검이라도 들고 가라고.",
+	"Goal": "Equip:낡은검",
+	"Reward": "Item:체력포션,Gold:500",
+	"IsCleared": false
+}
