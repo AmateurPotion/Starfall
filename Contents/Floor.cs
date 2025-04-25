@@ -1,7 +1,5 @@
-using System.Diagnostics;
-using System.Text;
 using Spectre.Console;
-using Spectre.Console.Rendering;
+using Starfall.Contents.Json;
 using Starfall.Utils;
 
 namespace Starfall.Contents;
@@ -10,11 +8,17 @@ public class Floor
 {
   private static readonly Random random = new();
   public readonly int length;
+  public readonly Item[] itemPool;
+  public readonly MonsterData[] monsterPool;
+  public readonly Event[] eventPool;
   public List<StageNode>[] data;
   public Vector2Int current = new(-1, -1);
   public int Width => data.Length;
-  public Floor(int length = 5, int width = 5)
+  public Floor(Item[] items, MonsterData[] monsters, Event[] events, int length = 5, int width = 5)
   {
+    itemPool = items;
+    eventPool = events;
+    monsterPool = monsters;
     this.length = length + 3;
     data = new List<StageNode>[width];
 
@@ -69,7 +73,6 @@ public class Floor
 
     foreach (var n in eventList)
     {
-      Console.WriteLine(n);
       var node = (from line in data
                   where line[n].type == StageType.Battle
                   orderby random.Next()

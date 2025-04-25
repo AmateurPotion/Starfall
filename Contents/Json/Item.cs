@@ -1,3 +1,5 @@
+using Starfall.Core;
+
 namespace Starfall.Contents.Json;
 public static class ItemTypeUtill
 {
@@ -33,7 +35,8 @@ public enum ItemRarity
 
 public struct Item
 {
-  public static readonly Dictionary<string, Item> items = [];
+  public static Dictionary<string, Item> Items => GameManager.items;
+  public static readonly Item Null = new();
   public ItemType Type { get; set; } = ItemType.None;
   public string Name { get; set; } = "undefined";
   public string Description { get; set; } = "no description";

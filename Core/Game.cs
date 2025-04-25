@@ -1,5 +1,3 @@
-using System.ComponentModel.Design;
-using System.Diagnostics.Tracing;
 using System.Text;
 using Spectre.Console;
 using Starfall.Contents;
@@ -17,7 +15,6 @@ public class Game(GameData data)
 	public Player player = data;
 	public Shop shop = new("수련자갑옷", "무쇠갑옷", "스파르타의갑옷", "낡은검", "청동도끼", "스파르타의창", "마력의장신구", "체력의장신구", "체력포션", "마력포션");
 	private Func<bool> act = () => false;
-	private static Random random = new();
 
 	public void Start()
 	{
@@ -255,44 +252,43 @@ public class Game(GameData data)
 		act = OpenHub;
 		return false;
 	}
-
-	public List<DungeonData> dungeons =
+                           
+	public List<Dungeon> dungeons =
 	[
-		new ("쉬운 던전", 5, 40, 1000),
-			new ("일반 던전", 11, 40, 1700),
-			new ("어려운 던전", 17, 40, 2500),
-		];
+		new ("쉬운 던전", []){},
+		new ("일반 던전", []){},
+		new ("어려운 던전", []){},
+	];
 	public bool JoinDungeon()
 	{
-		// new Floor().Render();
-		// Console.Clear();
-		// AnsiConsole.MarkupLine("""
-		//   던전입장
-		//   이곳에서 던전으로 들어가기전 활동을 할 수 있습니다.
+		Console.Clear();
+		AnsiConsole.MarkupLine("""
+		  던전입장
+		  이곳에서 던전으로 들어가기전 활동을 할 수 있습니다.
 
-		//   """);
+		  """);
 
-		// var menu = new List<string>();
-		// var index = 0;
-		// foreach (var (label, def, _, _) in dungeons)
-		// {
-		// 	menu.Add($"{++index}. {label} | 방어력 {Math.Round(def)} 이상 권장");
-		// }
+		var menu = new List<string>();
+		var index = 0;
+		foreach (var dungeon in dungeons)
+		{
+			menu.Add($"{++index}. {dungeon.label} 권장 스텟 | 방어력 {dungeon.requireDef:N2} | 방어력 {dungeon.requireAtk:N2}");
+		}
 
-		// var select = MenuUtil.OpenMenu([.. menu, "0. 나가기"]);
-		// if (select > -1 && select < index)
-		// {
-		// 	Console.Clear();
-		// 	var (label, def, fail, dReward) = dungeons[select];
+		var select = MenuUtil.OpenMenu([.. menu, "0. 나가기"]);
+		if (select > -1 && select < menu.Count)
+		{
+			Dungeon dungeon = dungeons[select];
 
-		//         var battle = new Battle();
-		//         battle.StartBattle(player, GameManager.monsters);
-		//     }
+			dungeon.Join();
+			// var battle = new Battle();
+			// battle.StartBattle(player, GameManager.monsters);
+		}
 
-		// // 던전이 끝났을시 허브로
-		List<Monster> monsters = [];
-		GameManager.events[0].Action(player, monsters, () => AnsiConsole.MarkupLine("이벤트1 종료 후 후처리 완료"));
-		MenuUtil.OpenMenu("다음");
+		// 던전이 끝났을시 허브로
+		// List<Monster> monsters = [];
+		// GameManager.events[""].Action(player, monsters, () => AnsiConsole.MarkupLine("이벤트1 종료 후 후처리 완료"));
+		// MenuUtil.OpenMenu("다음");
 		act = OpenHub;
 		return false;
 	}
