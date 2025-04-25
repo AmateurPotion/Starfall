@@ -15,7 +15,7 @@ public class Dungeon
     for (int i = 0; i < floorDatas.Length; i++)
     {
       var data = floorDatas[i];
-      floors[i] = new(5, 5)
+      floors[i] = new(data.Length, data.Width)
       {
 
       };
