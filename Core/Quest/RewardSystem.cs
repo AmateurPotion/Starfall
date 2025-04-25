@@ -9,6 +9,11 @@ namespace Starfall.Core.Quest
 {
 	public static class RewardSystem
 	{
+		public static void ShowRewardScreen()
+		{
+			GameManager.EnterMain();
+		}
+
 		public static void GiveReward(Player player, RewardData rewardData)
 		{
 			if (rewardData == null)

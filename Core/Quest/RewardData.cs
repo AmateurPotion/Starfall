@@ -49,9 +49,41 @@ namespace Starfall.Core.Quest
 			return;
 		}
 
+		public string RewardToString()
+		{
+			string rewardTxt = string.Empty;
+
+			int index = 0;
+			foreach (var reward in rewards)
+			{
+				if (index != 0)
+					rewardTxt += ", ";
+
+				for (int i = 0; i < reward.Value.Count;i++)
+				{
+					if (i != 0)
+						rewardTxt += ", ";
+					rewardTxt += $"{reward.Value[i]}{GetRewardTypeToKor(reward.Key)}";
+				}
+				
+				index++;
+			}
+
+			return rewardTxt;
+		}
+
+		public string GetRewardTypeToKor(RewardType type) => type switch
+		{
+			RewardType.Gold => " G",
+			RewardType.Item or
+			_=> ""
+		};
+
 		public Dictionary<RewardType, List<string>> GetAll()
 		{
 			return rewards ?? new Dictionary<RewardType, List<string>>();
 		}
+
 	}
+
 }
