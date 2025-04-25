@@ -69,15 +69,34 @@ public static class ContentLoader
     
     RegisterEvent(
       "이벤트1",
-      "이벤트1 입니다\n세 가지 중 하나를 선택하세요.",
-      new() {"선택지1", "선택지2", "선택지3"},
-      () => AnsiConsole.MarkupLine("이벤트 후처리 실행")
+      "플레이어는 원주민을 만났습니다. 원주민 중 한 명을 골라주세요.",
+      new()
+      {
+        ["트랄랄레로 트랄랄라"] = (player, list) => 
+        {
+          AnsiConsole.MarkupLine("트랄랄레로 트랄랄라가 플레이어의 체력을회복");
+          player.hp += 100;
+        },
+        ["봄바르딜로 코르코딜로"] = (player, list) =>
+        {
+          AnsiConsole.MarkupLine("봄바르딜로 코르코딜로가 몬스터들을 공격");
+          foreach (var m in list)
+          {
+            m.Hp -= 100;
+          }
+        },
+        ["퉁x9 사후르"] = (player, list) =>
+        {
+         AnsiConsole.MarkupLine("퉁x9 사후르가 승리의 함성을 외침");
+         player.atk += 10;
+        }
+      }
     );
   }
 
   private static void RegisterSkill(string name, string desc, int cost, int durationTurn, int targetAmount, Dictionary<string, SkillAction> actions)
     => GameManager.skills.Add(name, new(name, desc, cost, durationTurn, targetAmount, actions));
 
-  private static void RegisterEvent(string name, string desc, List<string> options, EventTrigger? onFinish = null)
-    => GameManager.events.Add(name, new(name, desc, options, onFinish));
+  private static void RegisterEvent(string name, string desc, Dictionary<string, Action<Player, List<Monster>>> actions)
+    => GameManager.events.Add(new(name, desc, actions));
 }

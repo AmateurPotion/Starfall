@@ -1,4 +1,5 @@
 using System.ComponentModel.Design;
+using System.Diagnostics.Tracing;
 using System.Text;
 using Spectre.Console;
 using Starfall.Contents;
@@ -340,7 +341,7 @@ public class Game(GameData data)
 		];
 	public bool JoinDungeon()
 	{
-		new Floor().Render();
+		// new Floor().Render();
 		// Console.Clear();
 		// AnsiConsole.MarkupLine("""
 		//   던전입장
@@ -366,6 +367,9 @@ public class Game(GameData data)
 		//     }
 
 		// // 던전이 끝났을시 허브로
+		List<Monster> monsters = [];
+		GameManager.events[0].Action(player, monsters, () => AnsiConsole.MarkupLine("이벤트1 종료 후 후처리 완료"));
+		MenuUtil.OpenMenu("다음");
 		act = OpenHub;
 		return false;
 	}
