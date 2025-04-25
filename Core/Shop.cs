@@ -114,32 +114,65 @@ public class Shop : IEnumerable<Item>
 				정신력 {StatStr(item.Mp)}
 
 				""");
-
 		if (item.Type == ItemType.Consumable)
 		{
-				if (player.gold >= item.Price)
-				{
-					player.gold -= item.Price;
+			if (player.inventory.ContainsKey(item))
+			{
+				var sellPrice = (int)Math.Round(shop.sellRatio * item.Price);
+				int selection = MenuUtil.OpenMenu(
+					$"구매하기 / {item.Price} G {(player.gold < item.Price ? "(골드부족)" : "")}",
+					$"판매하기 / {sellPrice} G",
+					"뒤로가기"
+				);
 
-					if (player.inventory.ContainsKey(item))
+				if (selection == 0) // 구매
+				{
+					if (player.gold >= item.Price)
 					{
+						player.gold -= item.Price;
 						player.inventory[item] -= 1;
+						AnsiConsole.MarkupLine($"\n{item.Name}을(를) 1개 구매했습니다.");
 					}
 					else
 					{
-						player.inventory.Add(item, -1);
+						AnsiConsole.MarkupLine("\nGold 가 부족합니다.");
 					}
-
+				}
+				//판매
+				else if (selection == 1)
+				{
+					player.gold += sellPrice;
+					player.inventory[item] += 1;
+					if (player.inventory[item] == 0)
+					{
+						player.inventory.Remove(item);
+					}
+					AnsiConsole.MarkupLine($"\n{sellPrice} G에 {item.Name}을 판매했습니다.");
+				}
+				else if (selection == 2)
+				{
+					return;
+				}
+			}
+			// 처음 구매
+			else
+			{
+				if (player.gold >= item.Price)
+				{
+					player.gold -= item.Price;
+					player.inventory.Add(item, -1);
 					AnsiConsole.MarkupLine($"\n{item.Name}을(를) 1개 구매했습니다.");
 				}
 				else
 				{
 					AnsiConsole.MarkupLine("\nGold 가 부족합니다.");
 				}
-
-				MenuUtil.OpenMenu("확인");
 			}
-			else
+
+			MenuUtil.OpenMenu("확인");
+			return;
+		}
+		else
 		{
 			// 장비아이템 로직
 			if (player.inventory.ContainsKey(item))
@@ -150,24 +183,27 @@ public class Shop : IEnumerable<Item>
 				{
 					player.gold += sellPrice;
 					player.inventory.Remove(item);
-					AnsiConsole.MarkupLine($"\n {sellPrice} G에 {item.Name}을 판매했습니다.\n");
+					AnsiConsole.MarkupLine($"\n{sellPrice} G에 {item.Name}을 판매했습니다.");
 					MenuUtil.OpenMenu("확인");
 				}
 			}
 			else
 			{
 				// 아이템이 없을 시 구매
-				if (MenuUtil.OpenMenu($"구매하기 / {item.Price} G {(player.gold <= item.Price ? "(골드부족)" : "")}", "뒤로가기") == 0)
+				if (MenuUtil.OpenMenu($"구매하기 / {item.Price} G {(player.gold < item.Price ? "(골드부족)" : "")}", "뒤로가기") == 0)
 				{
 					if (player.gold >= item.Price)
 					{
 						player.gold -= item.Price;
 						player.inventory.Add(item, -1);
-						AnsiConsole.MarkupLine($"\n구매를 완료했습니다.");
+						AnsiConsole.MarkupLine("\n구매를 완료했습니다.");
 					}
-					else AnsiConsole.MarkupLine("\nGold 가 부족합니다.");
+					else
+					{
+						AnsiConsole.MarkupLine("\nGold 가 부족합니다.");
+					}
 
-					MenuUtil.OpenMenu("\n확인");
+					MenuUtil.OpenMenu("확인");
 				}
 			}
 		}
