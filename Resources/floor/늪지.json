@@ -1,0 +1,14 @@
+{
+	"Length": 5,
+	"Height": 2,
+	"MobPool": [
+		"Minion",
+		"Raptors"
+	],
+	"ItemPool": [
+		"낡은검",
+		"마력의낡은장신구",
+		"체력포션"
+	],
+	"EventPool": []
+}

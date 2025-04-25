@@ -1,0 +1,15 @@
+{
+	"Length": 12,
+	"Height": 5,
+	"MobPool": [
+		"Gromp",
+		"Suicide",
+		"SiegeMinion"
+	],
+	"ItemPool": [
+		"스파르타의갑옷",
+		"마력의강화된장신구",
+		"체력의강화된장신구"
+	],
+	"EventPool": []
+}
