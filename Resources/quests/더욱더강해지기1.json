@@ -1,0 +1,7 @@
+{
+	"Title": "더욱 더 강해지기! (1)",
+	"Comment": "더 강한 몬스터들을 상대하려면 그 레벨로는 안 될 거야.\n더 강해져서 와.",
+	"Goal": "LevelUp:level*3",
+	"Reward": "Gold:300",
+	"IsCleared": false
+}
