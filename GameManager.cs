@@ -18,6 +18,7 @@ namespace Starfall
 		public static readonly Dictionary<string, MonsterData> monsters = [];
 		public static readonly Dictionary<string, QuestData> quests = [];
 		public static readonly Dictionary<string, Skill> skills = [];
+		public static readonly Dictionary<string, Event> events = [];
 		public static Game? Instance { get; private set; }
 
 
