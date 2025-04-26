@@ -15,7 +15,7 @@ public class Event(string name, string description, Dictionary<string, Action<Pl
 
   public void Action(Player player, List<Monster> list, Action onFinish)
   {
-    AnsiConsole.MarkupLine($"{name}\n{description}\n");
+    AnsiConsole.MarkupLine($"[[{name}]]\n{description}\n");
 
     var selected = AnsiConsole.Prompt(
       new SelectionPrompt<string>()
