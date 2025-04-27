@@ -18,7 +18,7 @@ namespace Starfall.Core.Quest
 		public static Dictionary<string, QuestData> inProgressQuests = new Dictionary<string, QuestData>();
 		static Dictionary<string, QuestData> clearedQuests = new Dictionary<string, QuestData>();
 
-		static Player player => GameManager.Instance!.player;
+		static Player player => GameManager.Game!.player;
 
 		public static void EnterQuestMenu()
 		{
@@ -88,8 +88,8 @@ namespace Starfall.Core.Quest
 			// 메뉴 씬으로
 			if (selection == questTitles.Length - 1)
 			{
-				if (GameManager.Instance != null)
-					GameManager.Instance.Start();
+				if (GameManager.Game != null)
+					GameManager.Game.Start();
 				else
 					Console.WriteLine("Game.cs Instance 없음");
 			}

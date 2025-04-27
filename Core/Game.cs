@@ -12,7 +12,6 @@ namespace Starfall.Core;
 public class Game
 {
 	public Player player;
-	public Shop shop = new("수련자갑옷", "무쇠갑옷", "스파르타의갑옷", "낡은검", "청동도끼", "스파르타의창", "마력의장신구", "체력의장신구", "체력포션", "마력포션");
 	private Func<bool> act = () => false;
 
 	public Game(GameData data)
@@ -259,10 +258,11 @@ public class Game
 		}
 	}
 
+	[Obsolete("던전에서만 사용가능하게 바뀜. 제거 예정")]
 	public bool OpenShop()
 	{
 		// 뒤로가기 선택되면 해당 메서드 빠져나옴
-		Shop.EnterShop(shop, player);
+		// Shop.EnterShop(shop, player);
 		act = OpenHub;
 		return false;
 	}
@@ -302,7 +302,7 @@ public class Game
 		return false;
 	}
 
-	public bool Rest(int requireGold)
+	public void Rest(int requireGold)
 	{
 		Console.Clear();
 		AnsiConsole.MarkupLine($"""
@@ -329,8 +329,7 @@ public class Game
 			}
 		}
 
-		act = OpenHub;
-		return false;
+		return;
 	}
 
 	public bool Save()

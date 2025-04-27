@@ -10,6 +10,7 @@ public static class StageTypeUtil
     StageType.Event => "이벤트",
     StageType.Shop => "상점",
     StageType.Boss => "보스전",
+    StageType.Rest => "쉼터",
     _ => "Err"
   };
 }
@@ -21,7 +22,8 @@ public enum StageType
   Battle = 2,
   Event = 3,
   Shop = 4,
-  Boss = 5
+  Boss = 5,
+  Rest = 6
 }
 
 

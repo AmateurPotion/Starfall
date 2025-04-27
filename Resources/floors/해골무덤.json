@@ -3,5 +3,5 @@
 	"Width": 5,
 	"MobPool": ["Suicide", "SiegeMinion"],
 	"ItemPool": ["스파르타의창", "체력의장신구", "마력의장신구"],
-	"EventPool": []
+	"EventPool": ["세 개의 상자", "숨겨진 쉼터", "이상한 부족의 환영"]
 }

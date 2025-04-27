@@ -1,5 +1,7 @@
 using Spectre.Console;
 using Starfall.Contents.Json;
+using Starfall.Core;
+using Starfall.PlayerService;
 using Starfall.Utils;
 
 namespace Starfall.Contents;
@@ -7,6 +9,7 @@ namespace Starfall.Contents;
 public class Floor
 {
   private static readonly Random random = new();
+  private static Player Player => GameManager.Game!.player;
   public readonly int length;
   public readonly Item[] itemPool;
   public readonly MonsterData[] monsterPool;
@@ -62,9 +65,10 @@ public class Floor
       }
     }
 
-    //  이벤트 & 상점 스테이지 삽입
+    //  이벤트 스테이지 삽입
     int eventAmount = length < 3 ? length : 3,
-     shopAmount = length < 2 ? length : 2;
+     shopAmount = length < 2 ? length : 2,
+     restAmount = length < 1 ? length : 1;
 
     var eventList =
       (from n in Enumerable.Range(1, length)
@@ -80,6 +84,7 @@ public class Floor
       node.type = StageType.Event;
     }
 
+    //  상점 스테이지 삽입
     var shopList =
       (from n in Enumerable.Range(1, length)
        orderby random.Next()
@@ -92,6 +97,21 @@ public class Floor
                   orderby random.Next()
                   select line[n]).First();
       node.type = StageType.Shop;
+    }
+
+    // 쉼터 스테이지 삽입
+    var restList =
+      (from n in Enumerable.Range(1, length)
+       orderby random.Next()
+       select n).Take(restAmount);
+
+    foreach (var n in restList)
+    {
+      var node = (from line in data
+                  where line[n].type == StageType.Battle
+                  orderby random.Next()
+                  select line[n]).First();
+      node.type = StageType.Rest;
     }
     #endregion
   }
@@ -148,7 +168,8 @@ public class Floor
 
   private Vector2Int beforeFocus = new(0, 0);
   private List<int> path = [];
-  private int padSize = 8;
+  private readonly List<Action<Player, Monster[]>> onNextBattle = [];
+  private readonly int padSize = 8;
 
   public void Render()
   {
@@ -199,6 +220,44 @@ public class Floor
       case ConsoleKey.Enter:
         // 스테이지 입장
         path.Add(focus.y);
+        switch (data[focus.y][focus.x].type)
+        {
+          case StageType.Battle:
+            var enemies = new List<Monster>();
+            for (int i = 0; i < random.NextInt64(1, 4); i++)
+            {
+              var monster = new Monster(monsterPool[random.NextInt64(0, monsterPool.Length)]);
+
+              enemies.Add(monster);
+            }
+
+            new Battle(Player, enemies).StartBattle();
+            break;
+
+          case StageType.Event:
+            var targetEvent = eventPool[(int)random.NextInt64(1, eventPool.Length)];
+            targetEvent?.Action(Player);
+            break;
+
+          case StageType.Shop:
+            var itemCount = (int)random.NextInt64(1, itemPool.Length);
+            Shop.EnterShop(new Shop(
+              (from item in itemPool
+               orderby random.Next()
+               select item).Take(itemCount)
+            ), Player);
+            break;
+
+          case StageType.Rest:
+            GameManager.Game!.Rest(500);
+            break;
+
+          case StageType.Boss:
+            var boss = new Monster(monsterPool[0]);
+            boss.hp *= 3;
+            new Battle(Player, boss).StartBattle();
+            break;
+        }
         current = focus;
         beforeFocus = Focus(true);
         Console.SetCursorPosition(sx, sy);

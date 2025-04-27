@@ -25,7 +25,7 @@ namespace Starfall
 		public static readonly Dictionary<string, Event> events = [];
 		public static readonly Dictionary<string, Dungeon> dungeons = [];
 		#endregion
-		public static Game? Instance { get; private set; }
+		public static Game? Game { get; private set; }
 
 
 		public static void Init()
@@ -70,10 +70,10 @@ namespace Starfall
 
 		public static Game StartGame(GameData data)
 		{
-			Instance = new Game(data);
-			Instance.Start();
+			Game = new Game(data);
+			Game.Start();
 
-			return Instance;
+			return Game;
 		}
 
 		public static void JoinGame()

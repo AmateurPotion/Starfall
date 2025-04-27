@@ -3,5 +3,5 @@
 	"Width": 5,
 	"MobPool": ["Gromp", "Suicide", "SiegeMinion"],
 	"ItemPool": ["스파르타의갑옷", "마력의강화된장신구", "체력의강화된장신구"],
-	"EventPool": []
+	"EventPool": ["세 개의 상자", "숨겨진 쉼터", "이상한 부족의 환영"]
 }

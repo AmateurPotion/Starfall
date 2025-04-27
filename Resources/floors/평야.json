@@ -3,5 +3,5 @@
 	"Width": 5,
 	"MobPool": ["Voidling", "RiftScuttler"],
 	"ItemPool": ["청동도끼", "마력포션", "체력의낡은장신구"],
-	"EventPool": []
+	"EventPool": ["세 개의 상자", "숨겨진 쉼터", "이상한 부족의 환영"]
 }

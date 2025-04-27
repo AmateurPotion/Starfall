@@ -19,4 +19,7 @@ public class Monster(MonsterData data)
     {
         AnsiConsole.MarkupLine($"{name}을(를) 처치했습니다!");
     }
+
+    public Monster Duplicate()
+        => new(data);
 }

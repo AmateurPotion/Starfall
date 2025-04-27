@@ -3,5 +3,5 @@
 	"Width": 5,
 	"MobPool": ["Minion", "Raptors"],
 	"ItemPool": ["낡은검", "마력의낡은장신구", "체력포션"],
-	"EventPool": []
+	"EventPool": ["세 개의 상자", "숨겨진 쉼터", "이상한 부족의 환영"]
 }

@@ -1,13 +1,7 @@
 using System.Collections;
-using System.ComponentModel.Design;
 using System.Text;
 using Spectre.Console;
-using Starfall.Contents;
-using Starfall.Contents.Binary;
 using Starfall.Contents.Json;
-using Starfall.Core.Quest;
-using Starfall.Core;
-using Starfall.IO;
 using Starfall.IO.CUI;
 using Starfall.PlayerService;
 
@@ -17,17 +11,9 @@ public class Shop : IEnumerable<Item>
 	public List<Item> sellItems = [];
 	public float sellRatio = 0.85f;
 
-	public Shop(params string[] itemNames)
+	public Shop(params IEnumerable<Item> items)
 	{
-		var itemDic = GameManager.items;
-
-		foreach (var key in itemNames)
-		{
-			if (itemDic.TryGetValue(key, out var value))
-			{
-				sellItems.Add(value);
-			}
-		}
+		sellItems.AddRange(items);
 	}
 
 	public Item this[int i]

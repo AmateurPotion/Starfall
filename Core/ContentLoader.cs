@@ -83,7 +83,7 @@ public static class ContentLoader
 					}*/
 					for (int i = 0; i < 2; i++)
 					{
-						Battle.PlayerAttackMonster(player, list[random.Next(list.Count)], 150);
+						Battle.PlayerAttackMonster(player, list[random.Next(list.Length)], 150);
 					}
 				},
 			}
@@ -95,75 +95,78 @@ public static class ContentLoader
 		RegisterEvent(
 			"이상한 부족의 환영",
 			"플레이어는 원주민을 만났습니다. 원주민 중 한 명을 골라주세요.",
-			new()
-			{
-				["트랄랄레로 트랄랄라"] = (player, list) =>
+				("트랄랄레로 트랄랄라", (player, _) =>
 				{
 					AnsiConsole.MarkupLine("트랄랄레로 트랄랄라가 플레이어의 체력을회복");
 					player.hp += 100;
-				},
-				["봄바르딜로 코르코딜로"] = (player, list) =>
+				}
+		),
+				("봄바르딜로 코르코딜로", (player, events) =>
 				{
-					AnsiConsole.MarkupLine("봄바르딜로 코르코딜로가 몬스터들을 공격");
-					foreach (var m in list)
+					AnsiConsole.MarkupLine("봄바르딜로 코르코딜로가 몬스터들을 공격(다음 전투에서 몬스터들이 피해를 입습니다.)");
+					events["NextBattle"] = (_, mobs) =>
 					{
-						m.hp -= 100;
-					}
-				},
-				["퉁x9 사후르"] = (player, list) =>
+						foreach (var m in mobs)
+						{
+							m.hp -= 100;
+						}
+					};
+				}
+		),
+				("퉁x9 사후르", (player, _) =>
 				{
 					AnsiConsole.MarkupLine("퉁x9 사후르가 승리의 함성을 외침");
 					player.atk += 10;
 				}
-			}
+		)
 		);
 
 		RegisterEvent(
 			"세 개의 상자",
 			"플레이어는 던전을 탐험하다 3개의 상자를 발견했습니다. 하나만 열 수 있을 것 같습니다.",
-			new()
-			{
-				["상자 1"] = (player, list) =>
+				("상자 1", (player, _) =>
 				{
 					AnsiConsole.MarkupLine("상자 1에는 함정이 있었습니다. ");
 					player.hp -= 20;
-				},
-				["상자 2"] = (player, list) =>
+				}
+		),
+				("상자 2", (player, _) =>
 				{
 					AnsiConsole.MarkupLine("상자 2에서 약간의 금화를 발견했습니다.");
 					player.gold += 500;
-				},
-				["상자 3"] = (player, list) =>
+				}
+		),
+				("상자 3", (player, _) =>
 				{
 					AnsiConsole.MarkupLine("상자 3에는 많은 금화가 있었습니다. 보물을 챙기다 상처를 입었습니다.");
 					player.gold += 1000;
 					player.hp -= 10;
 				}
-			}
+		)
 		);
 
 		RegisterEvent(
 			"숨겨진 쉼터",
 			"플레이어는 던전을 탐험하다 비밀장소를 발견했습니다. 그 장소에서...",
-			new()
-			{
-				["휴식"] = (player, list) =>
+				("휴식", (player, _) =>
 				{
 					AnsiConsole.MarkupLine("500G를 통해 안전을 보장받을 수 있었습니다.");
 					player.gold -= 500;
 					player.hp += 100;
-				},
-				["아이템"] = (player, list) =>
+				}
+		),
+				("아이템", (player, _) =>
 				{
 					AnsiConsole.MarkupLine("약간의 골드를 획득했습니다.");
 					player.gold += 500;
-				},
-				["싸움"] = (player, list) =>
+				}
+		),
+				("싸움", (player, _) =>
 				{
 					AnsiConsole.MarkupLine("먼저 와 있던 몬스터가 존재했습니다.");
 					player.hp -= 20;
 				}
-			}
+		)
 		);
 		#endregion
 
@@ -192,7 +195,8 @@ public static class ContentLoader
 	private static void RegisterSkill(string name, string desc, int cost, int durationTurn, int targetAmount, Dictionary<string, SkillAction> actions)
 		=> GameManager.skills.Add(name, new(name, desc, cost, durationTurn, targetAmount, actions));
 
-	private static void RegisterEvent(string name, string desc, Dictionary<string, Action<Player, List<Monster>>> actions)
+
+	private static void RegisterEvent(string name, string desc, params (string key, Action<Player, Dictionary<string, Action<Player, Monster[]>>>)[] actions)
 		=> GameManager.events.Add(name, new(name, desc, actions));
 
 	private static FloorData[] LoadFloors(params string[] names)
