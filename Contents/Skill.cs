@@ -1,3 +1,5 @@
+using Spectre.Console;
+using Starfall.IO.CUI;
 using Starfall.PlayerService;
 
 namespace Starfall.Contents;
@@ -22,6 +24,11 @@ public class Skill(string name, string description, int cost, int durationTurn, 
   public Dictionary<string, SkillAction> actions = actions;
   public void Action(string eventName, Player player, List<Monster> list)
   {
+    if (eventName == "Use"){
+      AnsiConsole.MarkupLine(description);
+      MenuUtil.OpenMenu("다음");
+    }
+
     if (actions.TryGetValue(eventName, out var action)) action(player, list);
   }
 }

@@ -17,38 +17,49 @@ public static class ContentLoader
 			0,
 			new()
 			{
-				["Use"] = (player, _) => player.def += 3,
-				["Off"] = (player, _) => player.def -= 3
+				["Use"] = (player, _) => {
+					player.def += 3;
+					AnsiConsole.MarkupLine("방어력이 3 증가했습니다!");
+				},
+				["Off"] = (player, _) => {
+					player.def -= 3;
+					AnsiConsole.MarkupLine("방어력 버프의 지속시간이 끝났습니다.");
+				}
 			}
 		);
 
 		RegisterSkill(
 			"알파 스트라이크",
-			"마나 10을 소모하여 1명의 적에게 피해를 {0} * 2 만큼 줍니다.",
+			"마나 10을 소모하여 1명의 적에게 공격력의 200%만큼 피해를 줍니다.",
 			10,
 			0,
 			1,
 			new()
 			{
-				["Use"] = (player, list) => list[0].hp -= 2 * player.TrueAtk,
+				["Use"] = (player, list) => {
+					Battle.PlayerAttackMonster(player, list[0], 200);
+				},
 			}
 		);
 
 		RegisterSkill(
 			"자가 회복",
-			"마나 20을 소모하여 체력을 {1} * 2 회복합니다.",
+			"마나 20을 소모하여 체력을 방어력의 200%만큼 회복합니다.",
 			20,
 			0,
 			0,
 			new()
 			{
-				["Use"] = (player, list) => player.hp += 2 * player.def,
+				["Use"] = (player, list) => {
+					player.hp += 2 * player.def;
+					AnsiConsole.MarkupLine($"{player.def}의 체력을 회복했습니다!");
+				},
 			}
 		);
 
 		RegisterSkill(
 			"더블 스트라이크",
-			"마나 15을 소모하여 무작위 2명의 적에게 피해를 {0} * 1.5 만큼 줍니다.",
+			"마나 15을 소모하여 무작위 2명의 적에게 공격력의 150%만큼 피해를 줍니다.",
 			15,
 			0,
 			100,
@@ -56,19 +67,23 @@ public static class ContentLoader
 			{
 				["Use"] = (player, list) =>
 				{
-					var target = (from mob in list
+					/*var target = (from mob in list
 												orderby random.Next()
 												select mob).Take(2);
 					foreach (var mob in target)
 					{
-						mob.hp -= 1.5f * player.TrueAtk;
+						Battle.PlayerAttackMonster(player, mob, 150);
+					}*/
+					for (int i = 0; i < 2; i++)
+					{
+						Battle.PlayerAttackMonster(player, list[random.Next(list.Count)], 150);
 					}
 				},
 			}
 		);
 
 		RegisterEvent(
-			"이벤트1",
+			"이상한 부족의 환영",
 			"플레이어는 원주민을 만났습니다. 원주민 중 한 명을 골라주세요.",
 			new()
 			{
@@ -93,8 +108,8 @@ public static class ContentLoader
 			}
 		);
 
-		RegisteerEvent(
-			"이벤트2",
+		RegisterEvent(
+			"세 개의 상자",
 			"플레이어는 던전을 탐험하다 3개의 상자를 발견했습니다. 하나만 열 수 있을 것 같습니다.",
 			new()
 			{
@@ -117,8 +132,8 @@ public static class ContentLoader
 			}
 		);
 
-		RegisteerEvent(
-			"이벤트3",
+		RegisterEvent(
+			"숨겨진 쉼터",
 			"플레이어는 던전을 탐험하다 비밀장소를 발견했습니다. 그 장소에서...",
 			new()
 			{

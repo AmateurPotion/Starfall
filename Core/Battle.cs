@@ -75,6 +75,16 @@ namespace Starfall.Core
                 // 공격할 대상 선택
                 if (!PlayerTurn()) continue;
 
+                foreach (var m in monsters)
+                {
+                    if (!m.IsAlive)
+                    {
+                        m.Dead();
+                        resultExp += m.level;
+                        resultGold += m.rewardGold;
+                    }
+                }
+
                 AnsiConsole.MarkupLine("\n====================================\n");
 
                 MonsterTurn();
@@ -242,7 +252,7 @@ namespace Starfall.Core
             }
         }
 
-        private void PlayerAttackMonster(Player player, Monster monster, double multiplier)
+        static public void PlayerAttackMonster(Player player, Monster monster, double multiplier)
         {
             AnsiConsole.MarkupLine("");
 
@@ -261,12 +271,6 @@ namespace Starfall.Core
 
             AnsiConsole.MarkupLine($"{player.name}(이)가 {monster.name}에게 {playerDamage}의 데미지를 입혔습니다!!");
             monster.hp -= (float)playerDamage;
-            if (!monster.IsAlive)
-            {
-                monster.Dead();
-                resultExp += monster.level;
-                resultGold += monster.rewardGold;
-            }
         }
 
         private void MonsterAttackPlayer(Monster monster, Player player)
