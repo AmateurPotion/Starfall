@@ -1,4 +1,3 @@
-using System.Text.Json;
 using Spectre.Console;
 using Starfall.Contents.Binary;
 using Starfall.Contents.Json;
@@ -7,6 +6,7 @@ using Starfall.Core.Quest;
 using Starfall.IO;
 using Starfall.IO.CUI;
 using Starfall.Contents;
+using Starfall.PlayerService;
 
 
 namespace Starfall
@@ -14,12 +14,17 @@ namespace Starfall
 	public static class GameManager
 	{
 		public static bool Loaded { get; private set; } = false;
+		#region Json
 		public static readonly Dictionary<string, Item> items = [];
 		public static readonly Dictionary<string, MonsterData> monsters = [];
 		public static readonly Dictionary<string, QuestData> quests = [];
+		public static readonly Dictionary<string, FloorData> floors = [];
+		#endregion
+		#region Loader
 		public static readonly Dictionary<string, Skill> skills = [];
 		public static readonly Dictionary<string, Event> events = [];
-		public static readonly Dictionary<string, FloorData> floors = [];
+		public static readonly Dictionary<string, Dungeon> dungeons = [];
+		#endregion
 		public static Game? Instance { get; private set; }
 
 
@@ -29,77 +34,36 @@ namespace Starfall
 			StorageController.Init();
 			Console.Title = "StarFall";
 
+			#region  JsonLoading
 			// Item Json 파일 불러오기
-			foreach (var info in new DirectoryInfo("./Resources/items/").GetFiles())
+			StorageController.LoadJsonResources<Item>("items", (name, item) =>
 			{
-				try
-				{
-					if (info.Name.Contains(".json"))
-					{
-						var name = info.Name.Replace(".json", "");
-						var stream = info.OpenRead();
-						var data = JsonSerializer.Deserialize<Item>(stream);
+				items[name] = item;
+			});
 
-						items[name] = data;
-
-						stream.Close();
-					}
-				}
-				catch (JsonException) { }
-
-			}
-
+			// 몬스터 json 불러오기
 			// foreach 문 넣었음   by. 박재현 
-			foreach (var info in new DirectoryInfo("./Resources/monster/").GetFiles())
+			StorageController.LoadJsonResources<MonsterData>("monsters", (name, monster) =>
 			{
-				try
-				{
-					if (info.Name.Contains(".json"))
-					{
-						var name = info.Name.Replace(".json", "");
-						var stream = info.OpenRead();
-						var data = JsonSerializer.Deserialize<MonsterData>(stream);
-
-						monsters[name] = data;
-
-						stream.Close();
-					}
-				}
-				catch (JsonException) { }
-			}
-
-
-			// 스킬 불러오기
-			ContentLoader.Load();
+				monsters[name] = monster;
+			});
 
 			// 퀘스트 불러오기 by. 최영임
-			foreach (var file in new DirectoryInfo("./Resources/quests/").GetFiles("*.json"))
+			StorageController.LoadJsonResources<QuestJson>("quests", (name, raw) =>
 			{
-				var name = Path.GetFileNameWithoutExtension(file.Name);
+				quests[name] = QuestData.FromJson(raw);
+			});
 
-				try
-				{
-					using var stream = file.OpenRead();
+			// 층계 Json 불러오기
+			// 다른 데이터 참조때문에 loader 보단 이전, Json들보단 끝에 로딩해야됩니다.
+			StorageController.LoadJsonResources<FloorData>("floors", (name, data) =>
+			{
+				floors[name] = data;
+			});
+			#endregion
 
-					// QuestJson을 먼저 역직렬화
-					var raw = JsonSerializer.Deserialize<QuestJson>(stream);
-
-					// QuestData로 변환
-					if (raw is not null)
-					{
-						var data = QuestData.FromJson(raw);
-						quests[name] = data;
-					}
-					else
-					{
-						Console.WriteLine($"역직렬화 실패: {file.Name}");
-					}
-				}
-				catch (Exception ex)
-				{
-					Console.WriteLine($"json 파일 로드 실패 ({file.Name}): {ex.Message}");
-				}
-			}
+			// 컨텐츠로더는 구조상(스크립트기반 로더) 가장 마지막에 호출하게끔
+			ContentLoader.Load();
 
 			Loaded = true;
 		}
@@ -127,14 +91,14 @@ namespace Starfall
 			Console.WriteLine();
 
 			StorageController.SetSaveName("default");
-			switch (MenuUtil.OpenMenu("새로운 여정", "데이터 불러오기", "다른 여정 참여"))
+			switch (MenuUtil.OpenMenu("새로운 여정", "데이터 불러오기", "게임 종료"))
 			{
 				case 0:
 					// 새로운 여정 - 새 게임
 					// 추가 by. 최영임 
 					// 수정 by. 최영임 
 					// 플레이어 첫 생성
-					CreatePlayer.CreateNewPlayer();
+					Player.CreateNew();
 					break;
 
 				case 1:
@@ -148,17 +112,13 @@ namespace Starfall
 					if (select > -1 && select < menu.Length)
 					{
 						StorageController.SetSaveName(menu[select]);
-						GameManager.StartGame(StorageController.LoadBinary<GameData>("data"));
+						StartGame(StorageController.LoadBinary<GameData>("data"));
 					}
 					else goto Menu;
 					break;
 
 				case 2:
-					// 다른 여정 참여 - 다른 여정 참여
-					GameManager.JoinGame();
-					Console.WriteLine("개발중입니다.");
-					Console.ReadKey();
-					goto Menu;
+					break;
 
 				case -1: goto Menu;
 			}

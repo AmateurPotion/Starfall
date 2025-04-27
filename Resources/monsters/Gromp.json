@@ -1,0 +1,11 @@
+{
+	"Name": "심술두꺼비",
+	"Level": 10,
+	"Hp": 120.0,
+	"Atk": 4.0,
+	"Def": 24.0,
+	"RewardGold": 1200,
+	"CriticalChance": 15.0,
+	"CriticalDamageMultiplyer": 160.0,
+	"EvasionChance": 10.0
+}

@@ -1,0 +1,11 @@
+{
+	"Name": "칼날부리",
+	"Level": 1,
+	"Hp": 5,
+	"Atk": 1,
+	"Def": 0,
+	"RewardGold": 20,
+	"CriticalChance": 15.0,
+	"CriticalDamageMultiplyer": 160.0,
+	"EvasionChance": 10.0
+}

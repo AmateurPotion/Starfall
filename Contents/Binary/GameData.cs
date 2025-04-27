@@ -1,5 +1,5 @@
 using MessagePack;
-using static Starfall.Core.CreatePlayer;
+using Starfall.PlayerService;
 
 namespace Starfall.Contents.Binary;
 
@@ -11,7 +11,7 @@ public struct GameData
   [Key(nameof(Level))]
   public int Level { get; set; } = 1;
   [Key(nameof(Job))]
-  public JobName Job { get; set; } = JobName.None;
+  public Job Job { get; set; } = Job.None;
   [Key(nameof(Atk))]
   public float Atk { get; set; } = 10;
   [Key(nameof(Def))]
@@ -22,15 +22,17 @@ public struct GameData
   public float Mp { get; set; } = 50;
   [Key(nameof(Gold))]
   public int Gold { get; set; } = 1500;
+  [Key(nameof(Skills))]
+  public string[] Skills { get; set; } = [];
   [Key(nameof(Inventory))]
-  public GameDataItem[] Inventory { get; set; } = [];
+  public GameItemData[] Inventory { get; set; } = [];
 
   public GameData()
   { }
 }
 
 [MessagePackObject]
-public struct GameDataItem
+public struct GameItemData
 {
   [Key(nameof(Name))]
   public string Name { get; set; }

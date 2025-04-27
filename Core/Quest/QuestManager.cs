@@ -18,14 +18,7 @@ namespace Starfall.Core.Quest
 		public static Dictionary<string, QuestData> inProgressQuests = new Dictionary<string, QuestData>();
 		static Dictionary<string, QuestData> clearedQuests = new Dictionary<string, QuestData>();
 
-		static Player player;
-
-		public static void EnterQuestMenu(Player curPlayer)
-		{
-			player = curPlayer;
-
-			EnterQuestMenu();
-		}
+		static Player player => GameManager.Instance!.player;
 
 		public static void EnterQuestMenu()
 		{
@@ -145,7 +138,7 @@ namespace Starfall.Core.Quest
 				_ => "확인"
 			};
 
-			int selection = MenuUtil.OpenMenu(action, "뒤로가기");
+			int selection = MenuUtil.OpenMenu(0, false, action, "뒤로가기");
 
 			if (selection == 0)
 			{
@@ -226,13 +219,15 @@ namespace Starfall.Core.Quest
 		{
 			if (!inProgressQuests.TryGetValue(key, out var quest)) return;
 
-			if (IsGoalComplete(quest.Goal, null))
+			if (IsGoalComplete(quest.Goal, QuestCondition.NULL))
 				quest.State = QuestState.Completed;
 		}
 
 		// 목표를 달성했는가?
 		public static bool IsGoalComplete(QuestGoal goal, QuestCondition condition)
 		{
+			if (condition == QuestCondition.NULL) return false;
+
 			return goal.Type switch
 			{
 				QuestType.Kill => condition != null && condition.Target == goal.Target && condition.CurrentCount >= goal.Amount,

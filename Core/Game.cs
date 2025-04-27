@@ -9,11 +9,18 @@ using Starfall.IO.CUI;
 using Starfall.PlayerService;
 
 namespace Starfall.Core;
-public class Game(GameData data)
+public class Game
 {
-	public Player player = data;
+	public Player player;
 	public Shop shop = new("수련자갑옷", "무쇠갑옷", "스파르타의갑옷", "낡은검", "청동도끼", "스파르타의창", "마력의장신구", "체력의장신구", "체력포션", "마력포션");
 	private Func<bool> act = () => false;
+
+	public Game(GameData data)
+	{
+		player = data;
+
+		player.skills.Add(GameManager.skills[data.Job.GetBaseSkillId()]);
+	}
 
 	public void Start()
 	{
@@ -28,12 +35,18 @@ public class Game(GameData data)
 		Console.Clear();
 		ConsoleUtil.PrintTextFile("Starfall.Resources.pages.Hub.txt");
 
+		// var select = MenuUtil.OpenMenu(
+		// 	"[#d1949e]1[/]. 상태 보기", "[#d1949e]2[/]. 인벤토리",
+		// 	"[#d1949e]3[/]. 퀘스트 보기", "[#d1949e]4[/]. 상점",
+		// 	"[#d1949e]5[/]. 던전입장", "[#d1949e]6[/]. 휴식하기",
+		// 	"[#d1949e]7[/]. 저장하기", "[#d1949e]8[/]. 메인으로",
+		// 	"[#d1949e]9[/]. 게임 종료");
+
 		var select = MenuUtil.OpenMenu(
-			"[#d1949e]1[/]. 상태 보기", "[#d1949e]2[/]. 인벤토리",
-			"[#d1949e]2[/]. 퀘스트 보기", "[#d1949e]3[/]. 상점",
-			"[#d1949e]4[/]. 던전입장", "[#d1949e]5[/]. 휴식하기",
-			"[#d1949e]6[/]. 저장하기", "[#d1949e]7[/]. 메인으로",
-			"[#d1949e]8[/]. 게임 종료");
+		"[#d1949e]1[/]. 상태 보기", "[#d1949e]2[/]. 인벤토리",
+		"[#d1949e]3[/]. 퀘스트 보기", "[#d1949e]4[/]. 던전입장",
+		"[#d1949e]5[/]. 저장하기", "[#d1949e]6[/]. 메인으로",
+		"[#d1949e]7[/]. 게임 종료");
 
 		act = select switch
 		{
@@ -44,20 +57,16 @@ public class Game(GameData data)
 			// 퀘스트 보기
 			2 => () =>
 			{
-				QuestManager.EnterQuestMenu(player);
+				QuestManager.EnterQuestMenu();
 				return true;
 			}
 			,
-			// 상점
-			3 => OpenShop,
 			// 던전입장
-			4 => JoinDungeon,
-			// 휴식하기
-			5 => () => Rest(500),
+			3 => JoinDungeon,
 			// 저장하기
-			6 => Save,
+			4 => Save,
 			// 메인으로
-			7 => () =>
+			5 => () =>
 			{
 				GameManager.EnterMain();
 				return true;
@@ -67,7 +76,7 @@ public class Game(GameData data)
 		};
 
 		// 게임 종료 선택했을 때 게임 종료
-		return select == 8;
+		return select == 6;
 	}
 
 	private bool OpenStatus()
@@ -81,7 +90,7 @@ public class Game(GameData data)
       상태보기
       캐릭터의 정보가 표시됩니다.
       Lv. [#d1949e]{player.level:D2}[/]
-      {player.name} ( {player.job.GetJobNameToKor()} )
+      {player.name} ( {player.job.GetName()} )
       공격력 : [#d1949e]{player.TrueAtk}[/] {StatView(player.GetAddtionalAtk())}
       방어력 : [#d1949e]{player.TrueDef}[/] {StatView(player.GetAddtionalDef())}
       체 력 : [#d1949e]{player.TrueHp}[/] {StatView(player.GetAddtionalHp())}
@@ -89,7 +98,13 @@ public class Game(GameData data)
       Gold : [#d1949e]{player.gold}[/] G
       """);
 
-		Console.WriteLine();
+		Console.WriteLine("\n[ 스킬 목록 ]");
+
+		foreach (var skill in player.skills)
+		{
+			AnsiConsole.MarkupLine($"{skill.name} : {skill.description}");
+		}
+
 		MenuUtil.OpenMenu("[#d1949e]0[/]. 나가기");
 		act = OpenHub;
 		return false;
@@ -252,12 +267,6 @@ public class Game(GameData data)
 		return false;
 	}
 
-	public List<Dungeon> dungeons =
-	[
-		new ("쉬운 던전", []){},
-		new ("일반 던전", []){},
-		new ("어려운 던전", []){},
-	];
 	public bool JoinDungeon()
 	{
 		Console.Clear();
@@ -267,17 +276,18 @@ public class Game(GameData data)
 
 		  """);
 
-		var menu = new List<string>();
+		List<string> menu = [], selects = [];
 		var index = 0;
-		foreach (var dungeon in dungeons)
+		foreach (var (key, dungeon) in GameManager.dungeons)
 		{
 			menu.Add($"{++index}. {dungeon.label} 권장 스텟 | 방어력 {dungeon.requireDef:N2} | 방어력 {dungeon.requireAtk:N2}");
+			selects.Add(key);
 		}
 
 		var select = MenuUtil.OpenMenu([.. menu, "0. 나가기"]);
 		if (select > -1 && select < menu.Count)
 		{
-			Dungeon dungeon = dungeons[select];
+			Dungeon dungeon = GameManager.dungeons[selects[select]];
 
 			dungeon.Join();
 			// var battle = new Battle();

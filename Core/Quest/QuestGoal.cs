@@ -6,8 +6,6 @@ namespace Starfall.Core.Quest
 		public string Target { get; private set; }
 		public int Amount { get; private set; }
 
-		string questType;
-
 		public QuestGoal(string goalStr)
 		{
 			// 퀘스트 설정 할 때 (예를 들어: 던전)
@@ -54,8 +52,8 @@ namespace Starfall.Core.Quest
 				QuestType.Kill => "마리",
 				QuestType.LevelUp or
 				QuestType.StatUp => "만큼",
-				QuestType.Equip or    
-				_ => ""                           
+				QuestType.Equip or
+				_ => ""
 			};
 		}
 	}

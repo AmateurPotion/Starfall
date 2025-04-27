@@ -1,5 +1,6 @@
 using Spectre.Console;
 using Starfall.Contents;
+using Starfall.Contents.Json;
 using Starfall.PlayerService;
 
 namespace Starfall.Core;
@@ -9,6 +10,8 @@ public static class ContentLoader
 	private static readonly Random random = new();
 	public static void Load()
 	{
+
+		#region Skill
 		RegisterSkill(
 			"단단해지기",
 			"마나 10을 소모하여 1턴동안 방어력이 3 증가합니다.",
@@ -17,11 +20,13 @@ public static class ContentLoader
 			0,
 			new()
 			{
-				["Use"] = (player, _) => {
+				["Use"] = (player, _) =>
+				{
 					player.def += 3;
 					AnsiConsole.MarkupLine("방어력이 3 증가했습니다!");
 				},
-				["Off"] = (player, _) => {
+				["Off"] = (player, _) =>
+				{
 					player.def -= 3;
 					AnsiConsole.MarkupLine("방어력 버프의 지속시간이 끝났습니다.");
 				}
@@ -36,7 +41,8 @@ public static class ContentLoader
 			1,
 			new()
 			{
-				["Use"] = (player, list) => {
+				["Use"] = (player, list) =>
+				{
 					Battle.PlayerAttackMonster(player, list[0], 200);
 				},
 			}
@@ -50,7 +56,8 @@ public static class ContentLoader
 			0,
 			new()
 			{
-				["Use"] = (player, list) => {
+				["Use"] = (player, list) =>
+				{
 					player.hp += 2 * player.def;
 					AnsiConsole.MarkupLine($"{player.def}의 체력을 회복했습니다!");
 				},
@@ -82,6 +89,9 @@ public static class ContentLoader
 			}
 		);
 
+		#endregion
+
+		#region Events
 		RegisterEvent(
 			"이상한 부족의 환영",
 			"플레이어는 원주민을 만났습니다. 원주민 중 한 명을 골라주세요.",
@@ -155,6 +165,28 @@ public static class ContentLoader
 				}
 			}
 		);
+		#endregion
+
+		#region Dungeon
+		var floors = LoadFloors("늪지", "끔찍한늪지", "평야", "해골무덤");
+		RegisterDungeon(new("쉬운 던전", floors)
+		{
+			requireAtk = 1,
+			requireDef = 5
+		});
+
+		RegisterDungeon(new("일반 던전", floors)
+		{
+			requireAtk = 1,
+			requireDef = 11
+		});
+
+		RegisterDungeon(new("어려운 던전", floors)
+		{
+			requireAtk = 1,
+			requireDef = 17
+		});
+		#endregion
 	}
 
 	private static void RegisterSkill(string name, string desc, int cost, int durationTurn, int targetAmount, Dictionary<string, SkillAction> actions)
@@ -162,4 +194,10 @@ public static class ContentLoader
 
 	private static void RegisterEvent(string name, string desc, Dictionary<string, Action<Player, List<Monster>>> actions)
 		=> GameManager.events.Add(name, new(name, desc, actions));
+
+	private static FloorData[] LoadFloors(params string[] names)
+		=> [.. from name in names select GameManager.floors[name]];
+	private static void RegisterDungeon(Dungeon dungeon)
+		=> GameManager.dungeons.Add(dungeon.label, dungeon);
+
 }

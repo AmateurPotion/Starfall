@@ -13,13 +13,13 @@ namespace Starfall.Core.Quest
 			Item
 		}
 
-		Dictionary<RewardType, List<string>> rewards;
+		private Dictionary<RewardType, List<string>> rewards;
 
 		public RewardData(string data)
 		{
 			if (string.IsNullOrEmpty(data))
 			{
-				rewards = null;
+				rewards = [];
 				return;
 			}
 
@@ -59,13 +59,13 @@ namespace Starfall.Core.Quest
 				if (index != 0)
 					rewardTxt += ", ";
 
-				for (int i = 0; i < reward.Value.Count;i++)
+				for (int i = 0; i < reward.Value.Count; i++)
 				{
 					if (i != 0)
 						rewardTxt += ", ";
 					rewardTxt += $"{reward.Value[i]}{GetRewardTypeToKor(reward.Key)}";
 				}
-				
+
 				index++;
 			}
 
@@ -76,7 +76,7 @@ namespace Starfall.Core.Quest
 		{
 			RewardType.Gold => " G",
 			RewardType.Item or
-			_=> ""
+			_ => ""
 		};
 
 		public Dictionary<RewardType, List<string>> GetAll()

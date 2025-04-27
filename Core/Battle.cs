@@ -18,11 +18,6 @@ namespace Starfall.Core
         private int resultGold = 0;
         private int resultExp = 0;
 
-        // 몬스터 관련
-        private float monCrit = 15f;
-        private float monCritDmg = 160f;
-        private float monEvasion = 10f;
-
         private Dictionary<string, int> buff = [];
 
         public void StartBattle(Player player, Dictionary<string, MonsterData> monstersD)
@@ -50,7 +45,7 @@ namespace Starfall.Core
 
                 AnsiConsole.MarkupLine($"""
                 [[내 정보]]
-                Lv.{player.level} {player.name} {player.job.GetJobNameToKor()}
+                Lv.{player.level} {player.name} {player.job.GetName()}
                 HP {player.presentHp}/{player.TrueHp}
                 MP {player.presentMp}/{player.TrueMp}
 
@@ -156,7 +151,7 @@ namespace Starfall.Core
             }
 
             // 회피 여부 계산
-            bool isEvasion = 100 * random.NextDouble() < monEvasion;
+            bool isEvasion = 100 * random.NextDouble() < target.evasionChance;
             if (isEvasion)
             {
                 AnsiConsole.MarkupLine($"{target.name}이 공격을 회피했습니다!");
@@ -296,10 +291,10 @@ namespace Starfall.Core
                     monDamage = monster.atk;
 
                     // 치명타 여부 계산
-                    bool isCrit = 100 * random.NextDouble() < monCrit;
+                    bool isCrit = 100 * random.NextDouble() < monster.criticalChance;
                     if (isCrit)
                     {
-                        monDamage *= monCritDmg / 100;
+                        monDamage *= monster.criticalDamageMultiplyer / 100;
                         AnsiConsole.Markup("치명타!! ");
                     }
 
@@ -329,7 +324,7 @@ namespace Starfall.Core
 
             AnsiConsole.MarkupLine($"""
 
-            Lv.{player.level} {player.name} {player.job.GetJobNameToKor()}
+            Lv.{player.level} {player.name} {player.job.GetName()}
             HP {player.TrueHp} -> {player.presentHp}
             Mp {player.TrueMp} -> {player.presentMp}
 
