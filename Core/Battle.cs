@@ -208,7 +208,7 @@ namespace Starfall.Core
           {
             targetMonster.Add(m);
           }
-          selectedskill.Action("Use", player, [.. targetMonster], 0);
+          SkillAttack(selectedskill, targetMonster);
           player.presentMp -= selectedskill.cost;
           return true;
         }
