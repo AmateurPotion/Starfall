@@ -1,7 +1,7 @@
 {
 	"Name": "던전바위게",
 	"Level": 3,
-	"Hp": 220,
+	"Hp": 40,
 	"Atk": 1,
 	"Def": 5,
 	"RewardGold": 500,
