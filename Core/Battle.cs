@@ -19,7 +19,8 @@ namespace Starfall.Core
     private int resultGold = 0;
     private int resultExp = 0;
 
-    private Dictionary<string, int> buff = [];
+    // private Dictionary<string, int> buff = [];
+    private List<(SkillAction, int turn)> buff = [];
 
     public Battle(Player player, params IEnumerable<Monster> monsters)
     {
@@ -123,14 +124,15 @@ namespace Starfall.Core
         MonsterAttackPlayer(m, player);
       }
 
-      foreach (var (key, value) in buff)
+      var newList = new List<(SkillAction, int)>();
+      foreach (var (action, duration) in buff)
       {
-        buff[key]--;
-        if (value == 0)
-        {
-          skills[key].Action("Off", player, monsters);
-        }
+        var remain = action(player, monsters, duration);
+        if (remain > 0) newList.Add((action, remain));
+        // Skills[key].Action("Off", player, monsters);
       }
+      buff.RemoveAll((_) => true);
+      buff = newList;
     }
 
     private bool NormalAttack()
@@ -189,10 +191,10 @@ namespace Starfall.Core
 
       if (selectedskill.targetAmount == 0)
       {  // 버프 스킬 체크
-        selectedskill.Action("Use", player, monsters);
+        selectedskill.Action("Use", player, monsters, 0);
         if (selectedskill.durationTurn > 0)
         {
-          buff.Add(selectedskill.name, selectedskill.durationTurn);
+          buff.Add((selectedskill.actions["End"], selectedskill.durationTurn));
         }
         player.presentMp -= selectedskill.cost;
         return true;
@@ -206,7 +208,7 @@ namespace Starfall.Core
           {
             targetMonster.Add(m);
           }
-          selectedskill.Action("Use", player, [.. targetMonster]);
+          selectedskill.Action("Use", player, [.. targetMonster], 0);
           player.presentMp -= selectedskill.cost;
           return true;
         }
@@ -240,7 +242,7 @@ namespace Starfall.Core
 
         monList.Add(target);
 
-        skill.Action("Use", player, [.. monList]);
+        skill.Action("Use", player, [.. monList], 0);
 
         break;
       }
