@@ -17,8 +17,10 @@ public class Floor
   public List<StageNode>[] data;
   public Vector2Int current = new(-1, -1);
   public int Width => data.Length;
-  public Floor(Item[] items, MonsterData[] monsters, Event[] events, int length = 5, int width = 5)
+  public int index;
+  public Floor(Item[] items, MonsterData[] monsters, Event[] events, int index, int length = 5, int width = 5)
   {
+    this.index = index;
     itemPool = items;
     eventPool = events;
     monsterPool = monsters;
@@ -171,10 +173,10 @@ public class Floor
   private readonly List<Action<Player, Monster[]>> onNextBattle = [];
   private readonly int padSize = 8;
 
-  public void Render()
+  public bool Render()
   {
-    Console.Clear();
   Render:
+    Console.Clear();
     var (sx, sy) = Console.GetCursorPosition();
     var focus = beforeFocus;
 
@@ -256,6 +258,9 @@ public class Floor
             var boss = new Monster(monsterPool[0]);
             boss.hp *= 3;
             new Battle(Player, boss).StartBattle();
+            return true;
+
+          default:
             break;
         }
         current = focus;
