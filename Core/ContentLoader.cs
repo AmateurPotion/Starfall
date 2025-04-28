@@ -279,20 +279,19 @@ public static class ContentLoader
 		#endregion
 
 		#region Dungeon
-		var floors = LoadFloors("늪지", "끔찍한늪지", "평야", "해골무덤");
-		RegisterDungeon(new("쉬운 던전", floors)
+		RegisterDungeon(new("쉬운 던전", LoadFloors("평야"))
 		{
 			requireAtk = 1,
 			requireDef = 5
 		});
 
-		RegisterDungeon(new("일반 던전", floors)
+		RegisterDungeon(new("일반 던전", LoadFloors("늪지", "끔찍한늪지"))
 		{
 			requireAtk = 1,
 			requireDef = 11
 		});
 
-		RegisterDungeon(new("어려운 던전", floors)
+		RegisterDungeon(new("어려운 던전", LoadFloors("늪지", "끔찍한늪지", "평야", "해골무덤"))
 		{
 			requireAtk = 1,
 			requireDef = 17
