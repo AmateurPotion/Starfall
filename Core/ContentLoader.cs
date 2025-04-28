@@ -20,15 +20,17 @@ public static class ContentLoader
 			0,
 			new()
 			{
-				["Use"] = (player, _) =>
+				["Use"] = (player, _, _) =>
 				{
 					player.def += 3;
 					AnsiConsole.MarkupLine("방어력이 3 증가했습니다!");
+					return 0;
 				},
-				["Off"] = (player, _) =>
+				["Off"] = (player, _, turn) =>
 				{
 					player.def -= 3;
 					AnsiConsole.MarkupLine("방어력 버프의 지속시간이 끝났습니다.");
+					return turn - 1;
 				}
 			}
 		);
@@ -41,9 +43,10 @@ public static class ContentLoader
 			1,
 			new()
 			{
-				["Use"] = (player, list) =>
+				["Use"] = (player, list, _) =>
 				{
 					Battle.PlayerAttackMonster(player, list[0], 200);
+					return 0;
 				},
 			}
 		);
@@ -56,10 +59,11 @@ public static class ContentLoader
 			0,
 			new()
 			{
-				["Use"] = (player, list) =>
+				["Use"] = (player, _, _) =>
 				{
 					player.hp += 2 * player.def;
 					AnsiConsole.MarkupLine($"{player.def}의 체력을 회복했습니다!");
+					return 0;
 				},
 			}
 		);
@@ -72,7 +76,7 @@ public static class ContentLoader
 			100,
 			new()
 			{
-				["Use"] = (player, list) =>
+				["Use"] = (player, list, _) =>
 				{
 					/*var target = (from mob in list
 												orderby random.Next()
@@ -85,6 +89,8 @@ public static class ContentLoader
 					{
 						Battle.PlayerAttackMonster(player, list[random.Next(list.Length)], 150);
 					}
+
+					return 0;
 				},
 			}
 		);

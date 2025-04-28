@@ -9,8 +9,9 @@ namespace Starfall.Core
   public class Battle
   {
     private static readonly Random random = new();
-    private static Dictionary<string, Skill> skills => GameManager.skills;
-    private Player player = new();
+    // private static Dictionary<string, Skill> skills => GameManager.skills;
+    private List<Skill> Skills => player.skills;
+    private readonly Player player;
     private readonly Monster[] monsters;
 
     // 플레이어 관련
@@ -167,18 +168,15 @@ namespace Starfall.Core
 
     private bool SelectSkill()
     {
-      var skillKeys = skills.Keys.ToList();
-      var options = skillKeys.Select(k => $"- {k}").ToList();
+      // var options = skillKeys.Select(k => $"- {k}").ToList();
 
-      options.Add("- 취소");
-
-      var choice = MenuUtil.OpenMenu([.. options]);
-      if (choice == skillKeys.Count || choice == -1)
+      var choice = MenuUtil.OpenMenu([.. (from skill in Skills select $"- {skill.name}"), "- 취소"]);
+      if (choice == Skills.Count || choice == -1)
       {
         return false;
       }
 
-      Skill selectedskill = skills[skillKeys[choice]];
+      var selectedskill = Skills[choice];
 
       // 마나가 부족하면 취소
       if (selectedskill.cost > player.presentMp)
