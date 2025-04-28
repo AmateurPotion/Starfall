@@ -14,7 +14,7 @@ public static class ContentLoader
 		#region Skill
 		RegisterSkill(
 			"단단해지기",
-			"마나 10을 소모하여 1턴동안 방어력이 3 증가합니다.",
+			"마나를 10 소모하여 1턴동안 방어력이 3 증가합니다.",
 			10,
 			1,
 			0,
@@ -36,8 +36,29 @@ public static class ContentLoader
 		);
 
 		RegisterSkill(
+			"분노",
+			"마나를 20 소모하여 2턴동안 공격력이 5 증가합니다.",
+			20,
+			2,
+			0,
+			new()
+			{
+				["Use"] = (player, _) =>
+				{
+					player.def += 3;
+					AnsiConsole.MarkupLine("방어력이 3 증가했습니다!");
+				},
+				["Off"] = (player, _) =>
+				{
+					player.def -= 3;
+					AnsiConsole.MarkupLine("방어력 버프의 지속시간이 끝났습니다.");
+				}
+			}
+		);
+
+		RegisterSkill(
 			"알파 스트라이크",
-			"마나 10을 소모하여 1명의 적에게 공격력의 200%만큼 피해를 줍니다.",
+			"마나를 10 소모하여 1명의 적에게 공격력의 200%만큼 피해를 줍니다.",
 			10,
 			0,
 			1,
@@ -52,17 +73,16 @@ public static class ContentLoader
 		);
 
 		RegisterSkill(
-			"자가 회복",
-			"마나 20을 소모하여 체력을 방어력의 200%만큼 회복합니다.",
-			20,
+			"베타 스트라이크",
+			"마나를 25 소모하여 1명의 적에게 공격력의 300%만큼 피해를 줍니다.",
+			25,
 			0,
-			0,
+			1,
 			new()
 			{
 				["Use"] = (player, _, _) =>
 				{
-					player.hp += 2 * player.def;
-					AnsiConsole.MarkupLine($"{player.def}의 체력을 회복했습니다!");
+					Battle.PlayerAttackMonster(player, list[0], 300);
 					return 0;
 				},
 			}
@@ -70,7 +90,7 @@ public static class ContentLoader
 
 		RegisterSkill(
 			"더블 스트라이크",
-			"마나 15을 소모하여 무작위 2명의 적에게 공격력의 150%만큼 피해를 줍니다.",
+			"마나를 15 소모하여 무작위 2명의 적에게 공격력의 150%만큼 피해를 줍니다.",
 			15,
 			0,
 			100,
@@ -78,13 +98,6 @@ public static class ContentLoader
 			{
 				["Use"] = (player, list, _) =>
 				{
-					/*var target = (from mob in list
-												orderby random.Next()
-												select mob).Take(2);
-					foreach (var mob in target)
-					{
-						Battle.PlayerAttackMonster(player, mob, 150);
-					}*/
 					for (int i = 0; i < 2; i++)
 					{
 						Battle.PlayerAttackMonster(player, list[random.Next(list.Length)], 150);
@@ -95,6 +108,88 @@ public static class ContentLoader
 			}
 		);
 
+		RegisterSkill(
+			"트리플 스트라이크",
+			"마나를 25 소모하여 무작위 3명의 적에게 공격력의 100%만큼 피해를 줍니다.",
+			25,
+			0,
+			100,
+			new()
+			{
+				["Use"] = (player, list) =>
+				{
+					for (int i = 0; i < 3; i++)
+					{
+						Battle.PlayerAttackMonster(player, list[random.Next(list.Length)], 150);
+					}
+				},
+			}
+		);
+
+		RegisterSkill(
+			"메테오 스트라이크",
+			"마나를 100 소모하여 모든 적에게 공격력의 500%만큼 피해를 줍니다.",
+			100,
+			0,
+			100,
+			new()
+			{
+				["Use"] = (player, list) =>
+				{
+					foreach (Monster m in list)
+					{
+						Battle.PlayerAttackMonster(player, m, 500);
+					}
+				},
+			}
+		);
+
+		RegisterSkill(
+			"파이어볼",
+			"마나를 30 소모하여 1명의 적에게 공격력의 400%만큼 피해를 줍니다.",
+			30,
+			0,
+			1,
+			new()
+			{
+				["Use"] = (player, list) =>
+				{
+					Battle.PlayerAttackMonster(player, list[0], 400);
+				},
+			}
+		);
+
+		RegisterSkill(
+			"자가 회복",
+			"마나를 20 소모하여 체력을 방어력의 200%만큼 회복합니다.",
+			20,
+			0,
+			0,
+			new()
+			{
+				["Use"] = (player, list) =>
+				{
+					player.hp += 2 * player.def;
+					AnsiConsole.MarkupLine($"{player.def}의 체력을 회복했습니다!");
+				},
+			}
+		);
+
+		RegisterSkill(
+			"대량 회복",
+			"마나를 50 소모하여 체력을 방어력의 300%만큼 회복합니다.",
+			20,
+			0,
+			0,
+			new()
+			{
+				["Use"] = (player, list) =>
+				{
+					player.hp += 3 * player.def;
+					AnsiConsole.MarkupLine($"{player.def}의 체력을 회복했습니다!");
+				},
+			}
+		);
 		#endregion
 
 		#region Events
