@@ -4,7 +4,7 @@ using Starfall.PlayerService;
 
 namespace Starfall.Contents;
 
-public delegate void SkillAction(Player player, Monster[] list);
+public delegate int SkillAction(Player player, Monster[] list, int turn);
 
 public class Skill(string name, string description, int cost, int durationTurn, int targetAmount, Dictionary<string, SkillAction> actions)
 {
@@ -22,14 +22,17 @@ public class Skill(string name, string description, int cost, int durationTurn, 
   // 1 이상이면 버프 스킬
   public int durationTurn = durationTurn;
   public Dictionary<string, SkillAction> actions = actions;
-  public void Action(string eventName, Player player, Monster[] list)
+  public int Action(string eventName, Player player, Monster[] list, int turn)
   {
     if (eventName == "Use")
     {
       AnsiConsole.MarkupLine(description);
       MenuUtil.OpenMenu("다음");
+      return 0;
     }
 
-    if (actions.TryGetValue(eventName, out var action)) action(player, list);
+    if (actions.TryGetValue(eventName, out var action)) return action(player, list, turn);
+
+    return 0;
   }
 }
