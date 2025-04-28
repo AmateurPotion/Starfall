@@ -24,16 +24,26 @@ public class Skill(string name, string description, int cost, int durationTurn, 
   public Dictionary<string, SkillAction> actions = actions;
   public int Action(string eventName, Player player, Monster[] list, int turn)
   {
-    if (eventName != "Use")
+    switch (eventName)
     {
-      return 0;
+      case "Use":
+        {
+          AnsiConsole.MarkupLine(description);
+          MenuUtil.OpenMenu("다음");
+          if (actions.TryGetValue(eventName, out var action))
+          {
+            return action(player, list, turn);
+          }
+          return 0;
+        }
+
+      case "End":
+        {
+          if (actions.TryGetValue(eventName, out var action)) return action(player, list, turn);
+          else return 0;
+        }
+
+      default: return 0;
     }
-
-    AnsiConsole.MarkupLine(description);
-    MenuUtil.OpenMenu("다음");
-
-    if (actions.TryGetValue(eventName, out var action)) return action(player, list, turn);
-
-    return 0;
   }
 }
