@@ -75,7 +75,7 @@ public class Dungeon
           축하합니다!!
           {label}을 클리어 하였습니다.
 
-          [탐험 결과]
+          [[탐험 결과]]
           체력 {startHp} -> {Player.TrueHp}
           Gold {startGold} G -> {Player.gold} G
           
