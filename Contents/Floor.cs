@@ -118,6 +118,7 @@ public class Floor
     #endregion
   }
 
+  // TODO 앞에 이동할 수 있는 노드가 있다면 이동불가능하도록
   private Vector2Int Focus(bool up)
   {
     var (px, py) = current;
