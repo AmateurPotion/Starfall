@@ -26,7 +26,7 @@ public static class ContentLoader
 					AnsiConsole.MarkupLine("방어력이 3 증가했습니다!");
 					return 0;
 				},
-				["Off"] = (player, _, turn) =>
+				["End"] = (player, _, turn) =>
 				{
 					player.def -= 3;
 					AnsiConsole.MarkupLine("방어력 버프의 지속시간이 끝났습니다.");
@@ -43,15 +43,17 @@ public static class ContentLoader
 			0,
 			new()
 			{
-				["Use"] = (player, _) =>
+				["Use"] = (player, _, _) =>
 				{
 					player.def += 3;
 					AnsiConsole.MarkupLine("방어력이 3 증가했습니다!");
+					return 0;
 				},
-				["Off"] = (player, _) =>
+				["End"] = (player, _, turn) =>
 				{
 					player.def -= 3;
 					AnsiConsole.MarkupLine("방어력 버프의 지속시간이 끝났습니다.");
+					return turn - 1;
 				}
 			}
 		);
@@ -80,7 +82,7 @@ public static class ContentLoader
 			1,
 			new()
 			{
-				["Use"] = (player, _, _) =>
+				["Use"] = (player, list, _) =>
 				{
 					Battle.PlayerAttackMonster(player, list[0], 300);
 					return 0;
@@ -116,12 +118,13 @@ public static class ContentLoader
 			100,
 			new()
 			{
-				["Use"] = (player, list) =>
+				["Use"] = (player, list, _) =>
 				{
 					for (int i = 0; i < 3; i++)
 					{
 						Battle.PlayerAttackMonster(player, list[random.Next(list.Length)], 150);
 					}
+					return 0;
 				},
 			}
 		);
@@ -134,12 +137,13 @@ public static class ContentLoader
 			100,
 			new()
 			{
-				["Use"] = (player, list) =>
+				["Use"] = (player, list, _) =>
 				{
 					foreach (Monster m in list)
 					{
 						Battle.PlayerAttackMonster(player, m, 500);
 					}
+					return 0;
 				},
 			}
 		);
@@ -152,9 +156,10 @@ public static class ContentLoader
 			1,
 			new()
 			{
-				["Use"] = (player, list) =>
+				["Use"] = (player, list, _) =>
 				{
 					Battle.PlayerAttackMonster(player, list[0], 400);
+					return 0;
 				},
 			}
 		);
@@ -167,10 +172,11 @@ public static class ContentLoader
 			0,
 			new()
 			{
-				["Use"] = (player, list) =>
+				["Use"] = (player, list, _) =>
 				{
 					player.hp += 2 * player.def;
 					AnsiConsole.MarkupLine($"{player.def}의 체력을 회복했습니다!");
+					return 0;
 				},
 			}
 		);
@@ -183,10 +189,11 @@ public static class ContentLoader
 			0,
 			new()
 			{
-				["Use"] = (player, list) =>
+				["Use"] = (player, list, _) =>
 				{
 					player.hp += 3 * player.def;
 					AnsiConsole.MarkupLine($"{player.def}의 체력을 회복했습니다!");
+					return 0;
 				},
 			}
 		);
