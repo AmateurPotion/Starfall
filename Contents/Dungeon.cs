@@ -62,7 +62,7 @@ public class Dungeon
           switch (MenuUtil.OpenMenu("올라가기", "탈출!"))
           {
             case 0: continue;
-            case 1: break;
+            case 1: return;
             default: goto Render;
           }
         }

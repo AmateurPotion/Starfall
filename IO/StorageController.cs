@@ -66,7 +66,6 @@ namespace Starfall.IO
       var info = new DirectoryInfo(path);
       if (!info.Exists)
       {
-        Console.WriteLine(path);
         info.Create();
       }
     }

@@ -280,7 +280,7 @@ public class Game
 		var index = 0;
 		foreach (var (key, dungeon) in GameManager.dungeons)
 		{
-			menu.Add($"{++index}. {dungeon.label} 권장 스텟 | 방어력 {dungeon.requireDef:N2} | 방어력 {dungeon.requireAtk:N2}");
+			menu.Add($"{++index}. {dungeon.label} 권장 스텟 | 방어력 {dungeon.requireDef:N2} | 공격력 {dungeon.requireAtk:N2}");
 			selects.Add(key);
 		}
 
