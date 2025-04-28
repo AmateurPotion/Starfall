@@ -24,12 +24,13 @@ public class Skill(string name, string description, int cost, int durationTurn, 
   public Dictionary<string, SkillAction> actions = actions;
   public int Action(string eventName, Player player, Monster[] list, int turn)
   {
-    if (eventName == "Use")
+    if (eventName != "Use")
     {
-      AnsiConsole.MarkupLine(description);
-      MenuUtil.OpenMenu("다음");
       return 0;
     }
+
+    AnsiConsole.MarkupLine(description);
+    MenuUtil.OpenMenu("다음");
 
     if (actions.TryGetValue(eventName, out var action)) return action(player, list, turn);
 
